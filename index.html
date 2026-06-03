@@ -520,6 +520,7 @@
         flex-shrink: 0;
         flex: unset;
         border-right: 1px solid var(--border);
+        order: -1;
       }
 
       .detail-back { display: none; }
@@ -1133,7 +1134,14 @@ function switchTab(name, btn) {
       document.getElementById('screen-parcelas').classList.add('hidden-desktop');
       if (currentParcelaId) document.getElementById('screen-detail').classList.add('active');
     } else {
-      if (currentParcelaId) document.getElementById('screen-detail').classList.add('active');
+      const p = currentParcelaId ? parcelas.find(x => x.id === currentParcelaId) : null;
+      if (p && !p.finalizada) {
+        document.getElementById('screen-detail').classList.add('active');
+      } else {
+        currentParcelaId = null;
+        showEmptyDetail();
+        document.getElementById('screen-detail').classList.add('active');
+      }
     }
   } else {
     if (name === 'stats') {
