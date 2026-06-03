@@ -462,6 +462,60 @@ function renderStats() {
   document.getElementById('s-fotos').textContent = totalFotos;
   document.getElementById('s-agricultores').textContent = agricultores;
 
+  // ── Incidencias activas ──
+  const activas = parcelas.filter(p => !p.finalizada);
+  const numIncidencias = activas.filter(p =>
+    p.seguimientos.length > 0 &&
+    p.seguimientos[p.seguimientos.length - 1].estado === '⚠️ Incidencia'
+  ).length;
+  const incNumEl = document.getElementById('s-incidencias');
+  const incCardEl = document.getElementById('stat-incidencias-card');
+  incNumEl.textContent = numIncidencias;
+  incNumEl.classList.toggle('has-alert', numIncidencias > 0);
+  incCardEl.classList.toggle('has-alert', numIncidencias > 0);
+
+  // ── Estado del cultivo ──
+  const estadoColors = {
+    'Brotación':     '#4ade80',
+    'Crecimiento':   '#22c55e',
+    'Floración':     '#fbbf24',
+    'Maduración':    '#fb923c',
+    'Normal':        '#94a3b8',
+    '⚠️ Incidencia': '#f87171',
+    'Sin datos':     '#cbd5e1',
+  };
+  const estadoOrder = ['⚠️ Incidencia', 'Maduración', 'Floración', 'Crecimiento', 'Brotación', 'Normal', 'Sin datos'];
+  const estadoMap = {};
+  activas.forEach(p => {
+    const estado = p.seguimientos.length > 0
+      ? p.seguimientos[p.seguimientos.length - 1].estado
+      : 'Sin datos';
+    estadoMap[estado] = (estadoMap[estado] || 0) + 1;
+  });
+  if (!activas.length) {
+    document.getElementById('estado-bars').innerHTML = '<p style="color:var(--muted);font-size:.85rem;text-align:center;padding:8px 0;">No hay parcelas activas</p>';
+  } else {
+    const maxEstado = Math.max(...Object.values(estadoMap));
+    const sorted = Object.entries(estadoMap).sort((a, b) => {
+      const ai = estadoOrder.indexOf(a[0]);
+      const bi = estadoOrder.indexOf(b[0]);
+      return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+    });
+    document.getElementById('estado-bars').innerHTML = sorted.map(([estado, count]) => {
+      const color = estadoColors[estado] || '#94a3b8';
+      const pct = (count / maxEstado * 100).toFixed(0);
+      const label = count === 1 ? '1 parcela' : `${count} parcelas`;
+      return `<div class="var-row">
+        <div class="var-label">
+          <span><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${color};margin-right:6px;vertical-align:middle;"></span>${estado}</span>
+          <span>${label}</span>
+        </div>
+        <div class="bar-bg"><div class="bar-fill" style="width:${pct}%;background:${color};"></div></div>
+      </div>`;
+    }).join('');
+  }
+
+  // ── Variedad y agricultor ──
   const varMap = {};
   parcelas.forEach(p => { varMap[p.variedad] = (varMap[p.variedad] || 0) + p.superficie; });
   const maxVar = Math.max(...Object.values(varMap));
