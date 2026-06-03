@@ -380,6 +380,7 @@ function goBack() {
     } else {
       showScreen('screen-parcelas');
       document.getElementById('fab').style.display = 'flex';
+      setTimeout(() => Object.keys(miniMaps).filter(k => k.startsWith('mini-')).forEach(k => { try { miniMaps[k].invalidateSize(); } catch(e) {} }), 50);
     }
   }
 }
@@ -415,6 +416,7 @@ function switchTab(name, btn) {
         showEmptyDetail();
         document.getElementById('screen-detail').classList.add('active');
       }
+      setTimeout(() => Object.keys(miniMaps).filter(k => k.startsWith('mini-')).forEach(k => { try { miniMaps[k].invalidateSize(); } catch(e) {} }), 50);
     }
   } else {
     if (name === 'stats') {
