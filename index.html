@@ -193,11 +193,16 @@
     #overlay-map.view-mode #map-bottombar-btns { display: none; }
     #overlay-map.view-mode #map-crosshair { display: none; }
 
+    .detail-hero-name {
+      display: flex; align-items: center;
+      justify-content: space-between; gap: 8px; margin-bottom: 4px;
+    }
+    .detail-hero-name h2 { margin-bottom: 0; }
     .btn-ver-mapa {
-      display: inline-flex; align-items: center; gap: 6px;
+      display: inline-flex; align-items: center; gap: 5px; flex-shrink: 0;
       background: rgba(255,255,255,.2); color: #fff; border: none;
-      padding: 6px 12px; border-radius: 20px; font-size: .8rem;
-      font-weight: 600; cursor: pointer; margin-top: 8px;
+      padding: 5px 10px; border-radius: 20px; font-size: .78rem;
+      font-weight: 600; cursor: pointer;
     }
     .btn-ver-mapa:hover { background: rgba(255,255,255,.3); }
 
@@ -213,7 +218,7 @@
       display: block; font-size: .8rem; font-weight: 600; color: var(--muted);
       margin-bottom: 5px; text-transform: uppercase; letter-spacing: .05em;
     }
-    input[type=text], input[type=number], select, textarea {
+    input[type=text], input[type=number], input[type=date], select, textarea {
       width: 100%; border: 1.5px solid var(--border); border-radius: 10px;
       padding: 11px 14px; font-size: .95rem; color: var(--text);
       background: var(--bg); outline: none; font-family: inherit;
@@ -626,7 +631,7 @@
       </div>
       <div class="form-group">
         <label>Fecha de siembra</label>
-        <input type="text" id="f-siembra" placeholder="dd/mm/aaaa" />
+        <input type="date" id="f-siembra" />
       </div>
       <button class="btn btn-primary" type="submit">Guardar parcela</button>
       <button class="btn btn-secondary" type="button" onclick="closeSheet('overlay-parcela')">Cancelar</button>
@@ -706,9 +711,33 @@ let parcelas = [
       { id: 7, fecha: '02/04/2026', estado: 'Crecimiento', comentario: 'Buen desarrollo vegetativo. Riego por aspersión puesto en marcha.', fotos: [] },
     ]
   },
+  {
+    id: 4, nombre: 'Vega del Río',
+    ubicacion: 'Cea, León',
+    lat: 42.461, lng: -5.020,
+    superficie: 1.5, variedad: 'Lucinda',
+    agricultor: 'Pedro Álvarez', proveedor: 'AgroSemillas Norte', siembra: '18/03/2026',
+    seguimientos: [
+      { id: 8, fecha: '25/03/2026', estado: 'Brotación', comentario: 'Brotación uniforme en toda la parcela. Suelo bien preparado tras el laboreo de invierno.', fotos: [] },
+      { id: 9, fecha: '10/04/2026', estado: 'Crecimiento', comentario: 'Plantas de 20 cm. Segundo riego realizado. Se aplica abono de fondo nitrogenado.', fotos: ['demo'] },
+      { id: 10, fecha: '02/05/2026', estado: 'Floración', comentario: 'Inicio de floración. Aspecto general muy bueno, sin incidencias destacadas.', fotos: ['demo', 'demo'] },
+    ]
+  },
+  {
+    id: 5, nombre: 'El Barrero',
+    ubicacion: 'Grajal de Campos, León',
+    lat: 42.257, lng: -5.057,
+    superficie: 2.8, variedad: 'Babylon',
+    agricultor: 'Carmen López', proveedor: 'Semillas Castilla S.L.', siembra: '12/03/2026',
+    seguimientos: [
+      { id: 11, fecha: '20/03/2026', estado: 'Brotación', comentario: 'Emergencia algo irregular en el extremo oeste. Se revisa la profundidad de siembra.', fotos: [] },
+      { id: 12, fecha: '08/04/2026', estado: '⚠️ Incidencia', comentario: 'Presencia de pulgón en los brotes apicales. Tratamiento insecticida preventivo aplicado.', fotos: ['demo'] },
+      { id: 13, fecha: '29/04/2026', estado: 'Crecimiento', comentario: 'Recuperación satisfactoria tras el tratamiento. Buen vigor vegetativo en toda la parcela.', fotos: ['demo'] },
+    ]
+  },
 ];
-let nextId = 4;
-let nextSegId = 8;
+let nextId = 6;
+let nextSegId = 14;
 let currentParcelaId = null;
 let editingSegId = null;
 let currentFotos = [];
@@ -936,13 +965,20 @@ function openDetail(id) {
     </div>
   `).join('');
 
+  Object.keys(miniMaps).filter(k => k.startsWith('detail-map-')).forEach(k => {
+    try { miniMaps[k].remove(); } catch(e) {}
+    delete miniMaps[k];
+  });
+
   document.getElementById('detail-content').innerHTML = `
     <div class="detail-hero">
       ${p.lat ? `<div class="detail-hero-map" id="detail-map-${p.id}"></div>` : ''}
       <div class="detail-hero-info">
-        <h2>${p.nombre}</h2>
+        <div class="detail-hero-name">
+          <h2>${p.nombre}</h2>
+          ${p.lat ? `<button class="btn-ver-mapa" onclick="openViewMap(${p.lat},${p.lng},'${p.nombre.replace(/'/g,"\\'")}')">🗺️ Mapa</button>` : ''}
+        </div>
         <p>📍 ${p.ubicacion}</p>
-        ${p.lat ? `<button class="btn-ver-mapa" onclick="openViewMap(${p.lat},${p.lng},'${p.nombre.replace(/'/g,"\\'")}')">🗺️ Ver mapa completo</button>` : ''}
       </div>
     </div>
     <div class="info-grid">
@@ -1060,7 +1096,7 @@ function saveParcela(e) {
     variedad: document.getElementById('f-variedad').value,
     agricultor: document.getElementById('f-agricultor').value,
     proveedor: document.getElementById('f-proveedor').value,
-    siembra: document.getElementById('f-siembra').value || '—',
+    siembra: (() => { const v = document.getElementById('f-siembra').value; return v ? v.split('-').reverse().join('/') : '—'; })(),
     seguimientos: []
   };
   parcelas.unshift(p);
