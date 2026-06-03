@@ -372,6 +372,25 @@
       cursor: pointer; display: flex; align-items: center; justify-content: center;
     }
 
+    /* ── HISTÓRICO ── */
+    .btn-finalizar {
+      width: 100%; padding: 14px; border: none; border-radius: 12px;
+      font-size: 1rem; font-weight: 700; cursor: pointer;
+      background: #fef3c7; color: #92400e; margin-top: 8px;
+      transition: opacity .2s;
+    }
+    .btn-finalizar:active { opacity: .8; }
+    .btn-reactivar {
+      width: 100%; padding: 14px; border: none; border-radius: 12px;
+      font-size: 1rem; font-weight: 700; cursor: pointer;
+      background: var(--green-ll); color: var(--green); margin-top: 8px;
+      transition: opacity .2s;
+    }
+    .badge-finalizada {
+      background: #fef3c7; color: #92400e;
+      font-size: .7rem; padding: 3px 8px; border-radius: 20px; white-space: nowrap;
+    }
+
     /* ── DETAIL EMPTY STATE ── */
     .detail-empty {
       display: flex; flex-direction: column;
@@ -490,6 +509,9 @@
       #screen-stats { flex: 1; min-width: 0; }
       #screen-stats.active { display: block; }
 
+      #screen-historico { flex: 1; min-width: 0; }
+      #screen-historico.active { display: block; }
+
       .detail-back { display: none; }
 
       /* Modals as centered dialogs */
@@ -555,6 +577,12 @@
     <div id="detail-content"></div>
   </div>
 
+  <!-- ── HISTÓRICO ── -->
+  <div class="screen" id="screen-historico">
+    <div class="section-title">Parcelas finalizadas</div>
+    <div id="historico-list"></div>
+  </div>
+
   <!-- ── STATS ── -->
   <div class="screen" id="screen-stats">
     <div class="section-title">Resumen de campaña</div>
@@ -574,6 +602,10 @@
   <button class="active" onclick="switchTab('parcelas',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
     Parcelas
+  </button>
+  <button onclick="switchTab('historico',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+    Histórico
   </button>
   <button onclick="switchTab('stats',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
@@ -719,7 +751,7 @@ let parcelas = [
     ubicacion: 'Sahagún, León',
     lat: 42.371, lng: -5.030,
     superficie: 2.5, variedad: 'Agria',
-    agricultor: 'Manuel García', proveedor: 'Semillas Castilla S.L.', siembra: '15/03/2026',
+    agricultor: 'Manuel García', proveedor: 'Semillas Castilla S.L.', siembra: '15/03/2026', finalizada: false,
     seguimientos: [
       { id: 1, fecha: '20/03/2026', estado: 'Brotación', comentario: 'Se aprecian los primeros brotes en la mitad norte. Suelo con buena humedad.', fotos: [] },
       { id: 2, fecha: '05/04/2026', estado: 'Crecimiento', comentario: 'Plantas de 15 cm aprox. Primer abonado. Sin incidencias.', fotos: ['demo'] },
@@ -731,7 +763,7 @@ let parcelas = [
     ubicacion: 'Cistierna, León',
     lat: 42.800, lng: -5.131,
     superficie: 1.8, variedad: 'Jazzy',
-    agricultor: 'Rosa Fernández', proveedor: 'AgroSemillas Norte', siembra: '22/03/2026',
+    agricultor: 'Rosa Fernández', proveedor: 'AgroSemillas Norte', siembra: '22/03/2026', finalizada: false,
     seguimientos: [
       { id: 4, fecha: '28/03/2026', estado: 'Brotación', comentario: 'Emergencia desigual en zona sur. Posible compactación.', fotos: [] },
       { id: 5, fecha: '15/04/2026', estado: '⚠️ Incidencia', comentario: 'Síntomas de alternaria en hojas basales. Tratamiento con fungicida cúprico.', fotos: ['demo'] },
@@ -742,7 +774,7 @@ let parcelas = [
     ubicacion: 'Almanza, León',
     lat: 42.660, lng: -4.981,
     superficie: 3.2, variedad: 'Soprano',
-    agricultor: 'Juan Diez', proveedor: 'Semillas Castilla S.L.', siembra: '10/03/2026',
+    agricultor: 'Juan Diez', proveedor: 'Semillas Castilla S.L.', siembra: '10/03/2026', finalizada: false,
     seguimientos: [
       { id: 6, fecha: '18/03/2026', estado: 'Brotación', comentario: 'Emergencia excelente y uniforme.', fotos: ['demo'] },
       { id: 7, fecha: '02/04/2026', estado: 'Crecimiento', comentario: 'Buen desarrollo vegetativo. Riego por aspersión puesto en marcha.', fotos: [] },
@@ -753,7 +785,7 @@ let parcelas = [
     ubicacion: 'Cea, León',
     lat: 42.461, lng: -5.020,
     superficie: 1.5, variedad: 'Lucinda',
-    agricultor: 'Pedro Álvarez', proveedor: 'AgroSemillas Norte', siembra: '18/03/2026',
+    agricultor: 'Pedro Álvarez', proveedor: 'AgroSemillas Norte', siembra: '18/03/2026', finalizada: false,
     seguimientos: [
       { id: 8, fecha: '25/03/2026', estado: 'Brotación', comentario: 'Brotación uniforme en toda la parcela. Suelo bien preparado tras el laboreo de invierno.', fotos: [] },
       { id: 9, fecha: '10/04/2026', estado: 'Crecimiento', comentario: 'Plantas de 20 cm. Segundo riego realizado. Se aplica abono de fondo nitrogenado.', fotos: ['demo'] },
@@ -765,7 +797,7 @@ let parcelas = [
     ubicacion: 'Grajal de Campos, León',
     lat: 42.257, lng: -5.057,
     superficie: 2.8, variedad: 'Babylon',
-    agricultor: 'Carmen López', proveedor: 'Semillas Castilla S.L.', siembra: '12/03/2026',
+    agricultor: 'Carmen López', proveedor: 'Semillas Castilla S.L.', siembra: '12/03/2026', finalizada: false,
     seguimientos: [
       { id: 11, fecha: '20/03/2026', estado: 'Brotación', comentario: 'Emergencia algo irregular en el extremo oeste. Se revisa la profundidad de siembra.', fotos: [] },
       { id: 12, fecha: '08/04/2026', estado: '⚠️ Incidencia', comentario: 'Presencia de pulgón en los brotes apicales. Tratamiento insecticida preventivo aplicado.', fotos: ['demo'] },
@@ -781,6 +813,7 @@ let currentFotos = [];
 let pickedLat = null, pickedLng = null;
 let isViewMode = false;
 let viewMarker = null;
+let currentTab = 'parcelas';
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
 function isDesktop() { return window.innerWidth >= 960; }
@@ -967,12 +1000,12 @@ function lastDate(p) {
 
 function filterParcelas(q) {
   const lq = q.toLowerCase();
-  renderList(parcelas.filter(p =>
+  renderList(parcelas.filter(p => !p.finalizada && (
     p.nombre.toLowerCase().includes(lq) ||
     p.variedad.toLowerCase().includes(lq) ||
     p.agricultor.toLowerCase().includes(lq) ||
     p.ubicacion.toLowerCase().includes(lq)
-  ));
+  )));
 }
 
 // ─── DETALLE ──────────────────────────────────────────────────────────────────
@@ -1026,7 +1059,11 @@ function openDetail(id) {
       <div class="info-item"><div class="info-label">Siembra</div><div class="info-val">📆 ${p.siembra || '—'}</div></div>
       <div class="info-item"><div class="info-label">Seguimientos</div><div class="info-val">📊 ${p.seguimientos.length}</div></div>
     </div>
-    <button class="btn btn-primary" onclick="openSeguimiento()" style="margin-bottom:16px;">📷 Añadir seguimiento</button>
+    ${!p.finalizada
+      ? `<button class="btn btn-primary" onclick="openSeguimiento()" style="margin-bottom:8px;">📷 Añadir seguimiento</button>
+         <button class="btn-finalizar" onclick="finalizarParcela(${p.id})">📦 Finalizar campaña</button>`
+      : `<button class="btn-reactivar" onclick="reactivarParcela(${p.id})">↩ Reactivar parcela</button>`
+    }
     <div class="section-title">Historial de seguimiento</div>
     <div class="timeline">${timeline || '<p style="color:var(--muted);text-align:center;padding:20px 0;">Sin seguimientos aún</p>'}</div>
   `;
@@ -1051,10 +1088,16 @@ function goBack() {
   currentParcelaId = null;
   if (isDesktop()) {
     document.querySelectorAll('.parcela-card').forEach(c => c.classList.remove('selected'));
+    document.getElementById('screen-detail').classList.remove('active');
     showEmptyDetail();
+    document.getElementById('screen-detail').classList.add('active');
   } else {
-    showScreen('screen-parcelas');
-    document.getElementById('fab').style.display = 'flex';
+    if (currentTab === 'historico') {
+      showScreen('screen-historico');
+    } else {
+      showScreen('screen-parcelas');
+      document.getElementById('fab').style.display = 'flex';
+    }
   }
 }
 
@@ -1062,23 +1105,30 @@ function goBack() {
 function switchTab(name, btn) {
   document.querySelectorAll('nav.bottom button').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+  currentTab = name;
 
-  if (name === 'stats') {
-    renderStats();
-    if (isDesktop()) {
-      document.getElementById('screen-detail').classList.remove('active');
+  if (isDesktop()) {
+    ['screen-stats', 'screen-historico', 'screen-detail'].forEach(id =>
+      document.getElementById(id).classList.remove('active')
+    );
+    if (name === 'stats') {
+      renderStats();
       document.getElementById('screen-stats').classList.add('active');
+    } else if (name === 'historico') {
+      renderHistorico();
+      document.getElementById('screen-historico').classList.add('active');
     } else {
-      goBack();
-      showScreen('screen-stats');
-      document.getElementById('fab').style.display = 'none';
+      if (currentParcelaId) document.getElementById('screen-detail').classList.add('active');
     }
   } else {
-    if (isDesktop()) {
-      document.getElementById('screen-stats').classList.remove('active');
-      if (currentParcelaId) {
-        document.getElementById('screen-detail').classList.add('active');
-      }
+    if (name === 'stats') {
+      goBack(); renderStats();
+      showScreen('screen-stats');
+      document.getElementById('fab').style.display = 'none';
+    } else if (name === 'historico') {
+      goBack(); renderHistorico();
+      showScreen('screen-historico');
+      document.getElementById('fab').style.display = 'none';
     } else {
       goBack();
     }
@@ -1134,10 +1184,11 @@ function saveParcela(e) {
     agricultor: document.getElementById('f-agricultor').value,
     proveedor: document.getElementById('f-proveedor').value,
     siembra: (() => { const v = document.getElementById('f-siembra').value; return v ? v.split('-').reverse().join('/') : '—'; })(),
+    finalizada: false,
     seguimientos: []
   };
   parcelas.unshift(p);
-  renderList(parcelas);
+  renderList(parcelas.filter(x => !x.finalizada));
   closeSheet('overlay-parcela');
   e.target.reset();
   document.getElementById('coords-badge').classList.remove('visible');
@@ -1225,6 +1276,59 @@ function saveSeguimiento(e) {
   openDetail(currentParcelaId);
 }
 
+// ─── HISTÓRICO ────────────────────────────────────────────────────────────────
+function renderHistorico() {
+  const finalizadas = parcelas.filter(p => p.finalizada);
+  const el = document.getElementById('historico-list');
+  if (!finalizadas.length) {
+    el.innerHTML = '<p style="text-align:center;color:var(--muted);margin-top:40px;">No hay parcelas finalizadas aún.</p>';
+    return;
+  }
+  Object.keys(miniMaps).filter(k => k.startsWith('mini-')).forEach(k => {
+    try { miniMaps[k].remove(); } catch(e) {}
+    delete miniMaps[k];
+  });
+  el.innerHTML = finalizadas.map(p => `
+    <div class="parcela-card${p.id === currentParcelaId ? ' selected' : ''}" data-id="${p.id}" onclick="openDetail(${p.id})">
+      ${p.lat ? `<div class="card-map" id="mini-${p.id}"></div>` : ''}
+      <div class="card-header" style="background:#92400e;">
+        <h3>${p.nombre}</h3>
+        <span class="badge-finalizada">Finalizada</span>
+      </div>
+      <div class="card-body">
+        <div class="card-row"><div class="card-field"><span>📍</span> ${p.ubicacion}</div></div>
+        <div class="card-row">
+          <div class="card-field">Sup.<strong>${p.superficie} ha</strong></div>
+          <div class="card-field">Agricultor<strong>${p.agricultor}</strong></div>
+          <div class="card-field">Siembra<strong>${p.siembra || '—'}</strong></div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span>📷 ${p.seguimientos.reduce((a,s)=>a+s.fotos.length,0)} fotos</span>
+        <span>💬 ${p.seguimientos.length} seguimientos</span>
+        <span style="margin-left:auto;color:#92400e;font-weight:600;font-size:.75rem;">${lastDate(p)} →</span>
+      </div>
+    </div>
+  `).join('');
+  requestAnimationFrame(() => {
+    finalizadas.forEach(p => { if (p.lat) initMiniMap(`mini-${p.id}`, p.lat, p.lng); });
+  });
+}
+
+function finalizarParcela(id) {
+  if (!confirm('¿Marcar esta parcela como finalizada? Se moverá al Histórico.')) return;
+  parcelas.find(x => x.id === id).finalizada = true;
+  renderList(parcelas.filter(x => !x.finalizada));
+  goBack();
+}
+
+function reactivarParcela(id) {
+  parcelas.find(x => x.id === id).finalizada = false;
+  renderHistorico();
+  renderList(parcelas.filter(x => !x.finalizada));
+  goBack();
+}
+
 // ─── UTILS ────────────────────────────────────────────────────────────────────
 function openFoto(src) {
   document.getElementById('foto-grande').src = src;
@@ -1239,7 +1343,7 @@ function closeSheet(id) { document.getElementById(id).classList.remove('open'); 
 function closeIfBg(e, id) { if (e.target.id === id) closeSheet(id); }
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
-renderList(parcelas);
+renderList(parcelas.filter(p => !p.finalizada));
 if (isDesktop()) {
   document.getElementById('screen-detail').classList.add('active');
   showEmptyDetail();
