@@ -346,7 +346,7 @@ function openDetail(id) {
     <div class="section-title">Historial de seguimiento</div>
     <div class="timeline">${timeline || '<p style="color:var(--muted);text-align:center;padding:20px 0;">Sin seguimientos aún</p>'}</div>
     ${!p.finalizada
-      ? `<button class="btn-finalizar" onclick="finalizarParcela(${p.id})" style="margin-top:8px;">📦 Finalizar campaña</button>`
+      ? `<button class="btn-finalizar" onclick="finalizarParcela(${p.id})" style="margin-top:8px;">📦 Finalizar parcela</button>`
       : ''
     }
   `;
@@ -404,7 +404,8 @@ function switchTab(name, btn) {
       renderHistorico();
       document.getElementById('screen-historico').classList.add('active', 'desktop-left');
       document.getElementById('screen-parcelas').classList.add('hidden-desktop');
-      if (currentParcelaId) document.getElementById('screen-detail').classList.add('active');
+      if (!currentParcelaId) showEmptyDetail();
+      document.getElementById('screen-detail').classList.add('active');
     } else {
       const p = currentParcelaId ? parcelas.find(x => x.id === currentParcelaId) : null;
       if (p && !p.finalizada) {
@@ -621,7 +622,7 @@ function renderHistorico() {
 function finalizarParcela(id) {
   showConfirm({
     icon: '📦',
-    title: '¿Finalizar campaña?',
+    title: '¿Finalizar parcela?',
     msg: 'Esta parcela se moverá al Histórico.<br>Podrás reactivarla en cualquier momento.',
     btnLabel: '📦 Confirmar finalización',
     btnClass: 'btn-finalizar',
