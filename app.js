@@ -419,7 +419,8 @@ function switchTab(name, btn) {
       renderHistorico();
       document.getElementById('screen-historico').classList.add('active', 'desktop-left');
       document.getElementById('screen-parcelas').classList.add('hidden-desktop');
-      if (!currentParcelaId) showEmptyDetail();
+      const pHist = currentParcelaId ? parcelas.find(x => x.id === currentParcelaId) : null;
+      if (!pHist || !pHist.finalizada) { currentParcelaId = null; showEmptyDetail(); }
       document.getElementById('screen-detail').classList.add('active');
     } else {
       const p = currentParcelaId ? parcelas.find(x => x.id === currentParcelaId) : null;
