@@ -190,6 +190,16 @@
     }
     #btn-map-gps { background: var(--green-ll); color: var(--green); }
     #btn-map-confirm { background: var(--green); color: #fff; }
+    #overlay-map.view-mode #map-bottombar-btns { display: none; }
+    #overlay-map.view-mode #map-crosshair { display: none; }
+
+    .btn-ver-mapa {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,.2); color: #fff; border: none;
+      padding: 6px 12px; border-radius: 20px; font-size: .8rem;
+      font-weight: 600; cursor: pointer; margin-top: 8px;
+    }
+    .btn-ver-mapa:hover { background: rgba(255,255,255,.3); }
 
     #map-crosshair {
       position: absolute; top: 50%; left: 50%;
@@ -489,7 +499,7 @@
 
 <header>
   <div>
-    <h1>🥔 PatataTrack</h1>
+    <h1>🥔 PataTrack</h1>
     <div class="header-sub">Gestión de parcelas</div>
   </div>
   <img src="hijolusa.png" alt="Hijolusa" style="height:26px;filter:brightness(0) invert(1);" />
@@ -703,6 +713,8 @@ let currentParcelaId = null;
 let editingSegId = null;
 let currentFotos = [];
 let pickedLat = null, pickedLng = null;
+let isViewMode = false;
+let viewMarker = null;
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
 function isDesktop() { return window.innerWidth >= 960; }
@@ -737,6 +749,7 @@ function openMap() {
 }
 
 function onMapMove() {
+  if (isViewMode) return;
   const c = mapPicker.getCenter();
   pickedLat = c.lat;
   pickedLng = c.lng;
@@ -792,8 +805,31 @@ function confirmMapLocation() {
   closeMap();
 }
 
+function openViewMap(lat, lng, nombre) {
+  isViewMode = true;
+  const overlay = document.getElementById('overlay-map');
+  overlay.classList.add('open', 'view-mode');
+  document.getElementById('map-topbar').querySelector('span').textContent = nombre;
+  setTimeout(() => {
+    if (!mapPicker) {
+      mapPicker = L.map('map-picker', { zoomControl: true, attributionControl: false });
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(mapPicker);
+      mapPicker.on('moveend', onMapMove);
+    } else {
+      mapPicker.invalidateSize();
+    }
+    if (viewMarker) { viewMarker.remove(); viewMarker = null; }
+    mapPicker.setView([lat, lng], 14);
+    viewMarker = L.circleMarker([lat, lng], { radius: 10, color: '#009A3C', fillColor: '#33B865', fillOpacity: 1, weight: 2 }).addTo(mapPicker);
+    reverseGeocode(lat, lng);
+  }, 50);
+}
+
 function closeMap() {
-  document.getElementById('overlay-map').classList.remove('open');
+  isViewMode = false;
+  if (viewMarker) { viewMarker.remove(); viewMarker = null; }
+  document.getElementById('overlay-map').classList.remove('open', 'view-mode');
+  document.getElementById('map-topbar').querySelector('span').textContent = 'Elige la ubicación';
 }
 
 // ─── MINI MAPS ────────────────────────────────────────────────────────────────
@@ -819,6 +855,10 @@ function initMiniMap(containerId, lat, lng) {
 
 // ─── RENDER LISTA ─────────────────────────────────────────────────────────────
 function renderList(list) {
+  Object.keys(miniMaps).filter(k => k.startsWith('mini-')).forEach(k => {
+    try { miniMaps[k].remove(); } catch(e) {}
+    delete miniMaps[k];
+  });
   const el = document.getElementById('parcelas-list');
   if (!list.length) {
     el.innerHTML = '<p style="text-align:center;color:var(--muted);margin-top:40px;">No hay parcelas aún.<br>Pulsa ＋ para añadir.</p>';
@@ -902,6 +942,7 @@ function openDetail(id) {
       <div class="detail-hero-info">
         <h2>${p.nombre}</h2>
         <p>📍 ${p.ubicacion}</p>
+        ${p.lat ? `<button class="btn-ver-mapa" onclick="openViewMap(${p.lat},${p.lng},'${p.nombre.replace(/'/g,"\\'")}')">🗺️ Ver mapa completo</button>` : ''}
       </div>
     </div>
     <div class="info-grid">
