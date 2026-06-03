@@ -225,6 +225,7 @@
       transition: border-color .2s;
     }
     input:focus, select:focus, textarea:focus { border-color: var(--green-l); background: #fff; }
+    input[type=date] { min-width: 0; max-width: 100%; }
     textarea { resize: vertical; min-height: 80px; }
     .form-row { display: flex; gap: 12px; }
     .form-row .form-group { flex: 1; }
@@ -289,7 +290,7 @@
     .ti-fotos::-webkit-scrollbar { display: none; }
     .ti-fotos img {
       height: 140px; width: 140px; object-fit: cover;
-      border-radius: 8px; flex-shrink: 0; cursor: pointer;
+      border-radius: 8px; flex-shrink: 0; cursor: zoom-in;
     }
     .ti-fotos .demo-foto {
       height: 140px; width: 140px; flex-shrink: 0; border-radius: 8px;
@@ -315,7 +316,7 @@
 
     .fotos-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
     .foto-thumb { position: relative; width: 80px; height: 80px; }
-    .foto-thumb img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; }
+    .foto-thumb img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; cursor: zoom-in; }
     .foto-thumb .foto-del {
       position: absolute; top: -6px; right: -6px;
       width: 20px; height: 20px; border-radius: 50%;
@@ -1138,7 +1139,7 @@ function saveParcela(e) {
 function renderFotosGrid() {
   document.getElementById('fotos-grid').innerHTML = currentFotos.map((f, i) => `
     <div class="foto-thumb">
-      <img src="${f}" />
+      <img src="${f}" onclick="openFoto(this.src)" />
       <button type="button" class="foto-del" onclick="removeFoto(${i})">✕</button>
     </div>
   `).join('');
