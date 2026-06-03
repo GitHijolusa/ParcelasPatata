@@ -55,7 +55,14 @@ nav.bottom button {
 }
 nav.bottom button.active { color: var(--green); }
 nav.bottom button svg { width: 22px; height: 22px; }
-#sidebar-new-btn { display: flex; color: var(--green); font-weight: 700; }
+#sidebar-new-btn {
+  display: flex;
+  color: #fff;
+  font-weight: 700;
+  background: var(--green);
+  margin: 5px 4px;
+  border-radius: 10px;
+}
 
 /* ── SCREENS ── */
 .screen { display: none; padding: 16px; }
