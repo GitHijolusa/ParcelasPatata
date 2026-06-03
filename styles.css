@@ -230,6 +230,15 @@ textarea { resize: vertical; min-height: 80px; }
 
 .ubicacion-wrap { display: flex; gap: 8px; align-items: flex-end; }
 .ubicacion-wrap input { flex: 1; }
+
+.date-wrap { position: relative; }
+.date-wrap input[type=date] { padding-right: 44px; }
+.date-wrap input[type=date]::-webkit-calendar-picker-indicator { display: none; }
+.date-icon-btn {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; cursor: pointer;
+  font-size: 1.2rem; padding: 4px; line-height: 1; color: var(--muted);
+}
 .btn-map-open {
   flex-shrink: 0; width: 44px; height: 44px; border-radius: 10px;
   background: var(--green); color: #fff; border: none;
