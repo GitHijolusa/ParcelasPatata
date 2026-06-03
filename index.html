@@ -220,7 +220,7 @@
     }
     input[type=text], input[type=number], input[type=date], select, textarea {
       width: 100%; border: 1.5px solid var(--border); border-radius: 10px;
-      padding: 11px 14px; font-size: .95rem; color: var(--text);
+      padding: 11px 14px; font-size: 1rem; color: var(--text);
       background: var(--bg); outline: none; font-family: inherit;
       transition: border-color .2s;
     }
@@ -342,6 +342,25 @@
     .var-label span:last-child { color: var(--muted); }
     .bar-bg { background: var(--green-ll); border-radius: 4px; height: 8px; }
     .bar-fill { background: var(--green); border-radius: 4px; height: 8px; transition: width .6s ease; }
+
+    /* ── LIGHTBOX ── */
+    #overlay-foto {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.93); z-index: 2000;
+      align-items: center; justify-content: center; cursor: zoom-out;
+    }
+    #overlay-foto.open { display: flex; }
+    #foto-grande {
+      max-width: 95vw; max-height: 92vh;
+      object-fit: contain; border-radius: 8px;
+      box-shadow: 0 8px 40px rgba(0,0,0,.6);
+    }
+    #foto-close {
+      position: fixed; top: 16px; right: 16px;
+      background: rgba(255,255,255,.15); color: #fff; border: none;
+      width: 36px; height: 36px; border-radius: 50%; font-size: 1.1rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
 
     /* ── DETAIL EMPTY STATE ── */
     .detail-empty {
@@ -557,6 +576,14 @@
 </nav>
 
 <button class="fab" id="fab" onclick="openNewParcela()">＋</button>
+
+<!-- ════════════════════════════════
+     LIGHTBOX FOTO
+════════════════════════════════ -->
+<div id="overlay-foto" onclick="closeFoto()">
+  <button id="foto-close" onclick="closeFoto()">✕</button>
+  <img id="foto-grande" src="" alt="" />
+</div>
 
 <!-- ════════════════════════════════
      MODAL: MAPA SELECTOR
@@ -953,7 +980,7 @@ function openDetail(id) {
         <div class="ti-fotos">
           ${s.fotos.map(f => f === 'demo'
             ? `<div class="demo-foto"><span style="font-size:2rem">🌿</span><span>Foto</span></div>`
-            : `<img src="${f}" />`
+            : `<img src="${f}" onclick="openFoto(this.src)" />`
           ).join('')}
         </div>` : ''}
       <span class="ti-tag">${s.estado}</span>
@@ -1189,6 +1216,15 @@ function saveSeguimiento(e) {
 }
 
 // ─── UTILS ────────────────────────────────────────────────────────────────────
+function openFoto(src) {
+  document.getElementById('foto-grande').src = src;
+  document.getElementById('overlay-foto').classList.add('open');
+}
+function closeFoto() {
+  document.getElementById('overlay-foto').classList.remove('open');
+  document.getElementById('foto-grande').src = '';
+}
+
 function closeSheet(id) { document.getElementById(id).classList.remove('open'); }
 function closeIfBg(e, id) { if (e.target.id === id) closeSheet(id); }
 
