@@ -55,7 +55,7 @@ nav.bottom button {
 }
 nav.bottom button.active { color: var(--green); }
 nav.bottom button svg { width: 22px; height: 22px; }
-#sidebar-new-btn { display: none; }
+#sidebar-new-btn { display: flex; color: var(--green); font-weight: 700; }
 
 /* ── SCREENS ── */
 .screen { display: none; padding: 16px; }
@@ -108,17 +108,6 @@ nav.bottom button svg { width: 22px; height: 22px; }
   isolation: isolate; transform: translateZ(0);
 }
 
-/* ── FAB ── */
-.fab {
-  position: fixed; bottom: 80px; right: 20px;
-  width: 56px; height: 56px; border-radius: 50%;
-  background: var(--green); color: #fff; border: none;
-  font-size: 1.8rem; cursor: pointer;
-  box-shadow: 0 4px 16px rgba(45,106,79,.4);
-  display: flex; align-items: center; justify-content: center;
-  transition: transform .15s; z-index: 99;
-}
-.fab:active { transform: scale(.92); }
 
 /* ── OVERLAYS ── */
 .overlay {
@@ -231,13 +220,23 @@ textarea { resize: vertical; min-height: 80px; }
 .ubicacion-wrap { display: flex; gap: 8px; align-items: flex-end; }
 .ubicacion-wrap input { flex: 1; }
 
-.date-wrap { position: relative; }
-.date-wrap input[type=date] { padding-right: 44px; }
+.date-wrap {
+  display: flex; align-items: center;
+  border: 1.5px solid var(--border); border-radius: 10px;
+  background: var(--bg); transition: border-color .2s, background .2s;
+  overflow: hidden;
+}
+.date-wrap:focus-within { border-color: var(--green-l); background: #fff; }
+.date-wrap input[type=date] {
+  flex: 1; min-width: 0;
+  border: none !important; background: transparent !important;
+  border-radius: 0 !important; box-shadow: none !important;
+  padding: 11px 4px 11px 14px; outline: none;
+}
 .date-wrap input[type=date]::-webkit-calendar-picker-indicator { display: none; }
 .date-icon-btn {
-  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
   background: none; border: none; cursor: pointer;
-  font-size: 1.2rem; padding: 4px; line-height: 1; color: var(--muted);
+  font-size: 1.2rem; padding: 6px 12px; flex-shrink: 0; line-height: 1;
 }
 .btn-map-open {
   flex-shrink: 0; width: 44px; height: 44px; border-radius: 10px;
@@ -508,7 +507,6 @@ textarea { resize: vertical; min-height: 80px; }
   #sidebar-new-btn:hover { opacity: .88; }
   #sidebar-new-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
 
-  .fab { display: none !important; }
 
   /* Two-panel main area */
   .app-content {

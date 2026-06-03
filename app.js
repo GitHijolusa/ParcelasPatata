@@ -373,7 +373,6 @@ function openDetail(id) {
     if (card) card.classList.add('selected');
   } else {
     showScreen('screen-detail');
-    document.getElementById('fab').style.display = 'none';
   }
 
   if (p.lat) {
@@ -393,7 +392,6 @@ function goBack() {
       showScreen('screen-historico');
     } else {
       showScreen('screen-parcelas');
-      document.getElementById('fab').style.display = 'flex';
       setTimeout(() => Object.keys(miniMaps).filter(k => k.startsWith('mini-')).forEach(k => { try { miniMaps[k].invalidateSize(); } catch(e) {} }), 50);
     }
   }
@@ -437,11 +435,9 @@ function switchTab(name, btn) {
     if (name === 'stats') {
       goBack(); renderStats();
       showScreen('screen-stats');
-      document.getElementById('fab').style.display = 'none';
     } else if (name === 'historico') {
       goBack(); renderHistorico();
       showScreen('screen-historico');
-      document.getElementById('fab').style.display = 'none';
     } else {
       goBack();
     }
