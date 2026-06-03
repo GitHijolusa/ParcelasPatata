@@ -512,6 +512,16 @@
       #screen-historico { flex: 1; min-width: 0; }
       #screen-historico.active { display: block; }
 
+      #screen-parcelas.hidden-desktop { display: none !important; }
+      #screen-historico.desktop-left {
+        display: block !important;
+        width: 380px;
+        min-width: 280px;
+        flex-shrink: 0;
+        flex: unset;
+        border-right: 1px solid var(--border);
+      }
+
       .detail-back { display: none; }
 
       /* Modals as centered dialogs */
@@ -603,13 +613,13 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
     Parcelas
   </button>
-  <button onclick="switchTab('historico',this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
-    Histórico
-  </button>
   <button onclick="switchTab('stats',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
     Estadísticas
+  </button>
+  <button onclick="switchTab('historico',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+    Histórico
   </button>
   <button id="sidebar-new-btn" onclick="openNewParcela()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -1111,12 +1121,17 @@ function switchTab(name, btn) {
     ['screen-stats', 'screen-historico', 'screen-detail'].forEach(id =>
       document.getElementById(id).classList.remove('active')
     );
+    document.getElementById('screen-historico').classList.remove('desktop-left');
+    document.getElementById('screen-parcelas').classList.remove('hidden-desktop');
+
     if (name === 'stats') {
       renderStats();
       document.getElementById('screen-stats').classList.add('active');
     } else if (name === 'historico') {
       renderHistorico();
-      document.getElementById('screen-historico').classList.add('active');
+      document.getElementById('screen-historico').classList.add('active', 'desktop-left');
+      document.getElementById('screen-parcelas').classList.add('hidden-desktop');
+      if (currentParcelaId) document.getElementById('screen-detail').classList.add('active');
     } else {
       if (currentParcelaId) document.getElementById('screen-detail').classList.add('active');
     }
@@ -1284,13 +1299,13 @@ function renderHistorico() {
     el.innerHTML = '<p style="text-align:center;color:var(--muted);margin-top:40px;">No hay parcelas finalizadas aún.</p>';
     return;
   }
-  Object.keys(miniMaps).filter(k => k.startsWith('mini-')).forEach(k => {
+  Object.keys(miniMaps).filter(k => k.startsWith('hist-mini-')).forEach(k => {
     try { miniMaps[k].remove(); } catch(e) {}
     delete miniMaps[k];
   });
   el.innerHTML = finalizadas.map(p => `
     <div class="parcela-card${p.id === currentParcelaId ? ' selected' : ''}" data-id="${p.id}" onclick="openDetail(${p.id})">
-      ${p.lat ? `<div class="card-map" id="mini-${p.id}"></div>` : ''}
+      ${p.lat ? `<div class="card-map" id="hist-mini-${p.id}"></div>` : ''}
       <div class="card-header" style="background:#92400e;">
         <h3>${p.nombre}</h3>
         <span class="badge-finalizada">Finalizada</span>
@@ -1311,7 +1326,7 @@ function renderHistorico() {
     </div>
   `).join('');
   requestAnimationFrame(() => {
-    finalizadas.forEach(p => { if (p.lat) initMiniMap(`mini-${p.id}`, p.lat, p.lng); });
+    finalizadas.forEach(p => { if (p.lat) initMiniMap(`hist-mini-${p.id}`, p.lat, p.lng); });
   });
 }
 
