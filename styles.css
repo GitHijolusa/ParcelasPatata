@@ -251,6 +251,7 @@ textarea { resize: vertical; min-height: 80px; }
 .btn:active { opacity: .8; }
 .btn-primary { background: var(--green); color: #fff; }
 .btn-secondary { background: var(--green-ll); color: var(--green); margin-top: 8px; }
+.btn-danger { background: #dc2626; color: #fff; }
 
 /* ── DETAIL ── */
 .detail-back {

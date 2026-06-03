@@ -340,12 +340,15 @@ function openDetail(id) {
       <div class="info-item"><div class="info-label">Seguimientos</div><div class="info-val">📊 ${p.seguimientos.length}</div></div>
     </div>
     ${!p.finalizada
-      ? `<button class="btn btn-primary" onclick="openSeguimiento()" style="margin-bottom:8px;">📷 Añadir seguimiento</button>
-         <button class="btn-finalizar" onclick="finalizarParcela(${p.id})">📦 Finalizar campaña</button>`
+      ? `<button class="btn btn-primary" onclick="openSeguimiento()" style="margin-bottom:8px;">📷 Añadir seguimiento</button>`
       : `<button class="btn-reactivar" onclick="reactivarParcela(${p.id})">↩ Reactivar parcela</button>`
     }
     <div class="section-title">Historial de seguimiento</div>
     <div class="timeline">${timeline || '<p style="color:var(--muted);text-align:center;padding:20px 0;">Sin seguimientos aún</p>'}</div>
+    ${!p.finalizada
+      ? `<button class="btn-finalizar" onclick="finalizarParcela(${p.id})" style="margin-top:8px;">📦 Finalizar campaña</button>`
+      : ''
+    }
   `;
 
   if (isDesktop()) {
@@ -541,10 +544,18 @@ function openEditSeguimiento(parcelaId, segId) {
 }
 
 function deleteSeguimiento(parcelaId, segId) {
-  if (!confirm('¿Eliminar este seguimiento?')) return;
-  const p = parcelas.find(x => x.id === parcelaId);
-  p.seguimientos = p.seguimientos.filter(s => s.id !== segId);
-  openDetail(parcelaId);
+  showConfirm({
+    icon: '🗑️',
+    title: '¿Eliminar seguimiento?',
+    msg: 'Esta acción no se puede deshacer.',
+    btnLabel: '🗑️ Eliminar',
+    btnClass: 'btn btn-danger',
+    onOk: () => {
+      const p = parcelas.find(x => x.id === parcelaId);
+      p.seguimientos = p.seguimientos.filter(s => s.id !== segId);
+      openDetail(parcelaId);
+    }
+  });
 }
 
 function saveSeguimiento(e) {
@@ -608,10 +619,18 @@ function renderHistorico() {
 }
 
 function finalizarParcela(id) {
-  if (!confirm('¿Marcar esta parcela como finalizada? Se moverá al Histórico.')) return;
-  parcelas.find(x => x.id === id).finalizada = true;
-  renderList(parcelas.filter(x => !x.finalizada));
-  goBack();
+  showConfirm({
+    icon: '📦',
+    title: '¿Finalizar campaña?',
+    msg: 'Esta parcela se moverá al Histórico.<br>Podrás reactivarla en cualquier momento.',
+    btnLabel: '📦 Confirmar finalización',
+    btnClass: 'btn-finalizar',
+    onOk: () => {
+      parcelas.find(x => x.id === id).finalizada = true;
+      renderList(parcelas.filter(x => !x.finalizada));
+      goBack();
+    }
+  });
 }
 
 function reactivarParcela(id) {
@@ -629,6 +648,17 @@ function openFoto(src) {
 function closeFoto() {
   document.getElementById('overlay-foto').classList.remove('open');
   document.getElementById('foto-grande').src = '';
+}
+
+function showConfirm({ icon, title, msg, btnLabel, btnClass = 'btn btn-primary', onOk }) {
+  document.getElementById('confirm-icon').textContent = icon;
+  document.getElementById('confirm-title').textContent = title;
+  document.getElementById('confirm-msg').innerHTML = msg;
+  const btn = document.getElementById('confirm-ok');
+  btn.textContent = btnLabel;
+  btn.className = btnClass;
+  btn.onclick = () => { closeSheet('overlay-confirm'); onOk(); };
+  document.getElementById('overlay-confirm').classList.add('open');
 }
 
 function closeSheet(id) { document.getElementById(id).classList.remove('open'); }

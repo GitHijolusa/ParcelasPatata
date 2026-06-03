@@ -201,6 +201,22 @@
   </div>
 </div>
 
+<!-- ════════════════════════════════
+     MODAL: CONFIRMACIÓN FINALIZAR
+════════════════════════════════ -->
+<div class="overlay" id="overlay-confirm" onclick="closeIfBg(event,'overlay-confirm')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div style="text-align:center;padding:8px 0 4px;">
+      <div id="confirm-icon" style="font-size:2.8rem;margin-bottom:12px;"></div>
+      <h3 id="confirm-title" style="font-size:1.1rem;margin-bottom:10px;"></h3>
+      <p id="confirm-msg" style="color:var(--muted);font-size:.88rem;line-height:1.5;margin-bottom:24px;"></p>
+    </div>
+    <button id="confirm-ok" class="btn btn-primary"></button>
+    <button class="btn btn-secondary" onclick="closeSheet('overlay-confirm')">Cancelar</button>
+  </div>
+</div>
+
 <script src="app.js"></script>
 </body>
 </html>
