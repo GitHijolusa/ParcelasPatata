@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PatataTrack</title>
 
-  <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
@@ -67,6 +66,7 @@
     }
     nav.bottom button.active { color: var(--green); }
     nav.bottom button svg { width: 22px; height: 22px; }
+    #sidebar-new-btn { display: none; }
 
     /* ── SCREENS ── */
     .screen { display: none; padding: 16px; }
@@ -90,9 +90,10 @@
     .parcela-card {
       background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
       margin-bottom: 12px; overflow: hidden; cursor: pointer;
-      transition: transform .15s; border: 1.5px solid transparent;
+      transition: transform .15s, border-color .15s; border: 1.5px solid transparent;
     }
     .parcela-card:active { transform: scale(.98); }
+    .parcela-card.selected { border-color: var(--green); box-shadow: 0 0 0 3px rgba(0,154,60,.15); }
     .card-header {
       background: var(--green); padding: 12px 16px;
       display: flex; justify-content: space-between; align-items: flex-start;
@@ -112,12 +113,10 @@
     }
     .card-footer span { font-size: .75rem; color: var(--muted); display: flex; align-items: center; gap: 4px; }
 
-    /* mini-map thumbnail en card */
     .card-map {
       height: 100px; width: 100%; pointer-events: none;
       border-bottom: 1px solid var(--border);
-      isolation: isolate;
-      transform: translateZ(0);
+      isolation: isolate; transform: translateZ(0);
     }
 
     /* ── FAB ── */
@@ -150,12 +149,16 @@
     }
     .sheet h2 { font-size: 1.1rem; margin-bottom: 20px; color: var(--green); }
 
-    /* ── MAP OVERLAY (full screen picker) ── */
+    /* ── MAP OVERLAY ── */
     #overlay-map {
       display: none; position: fixed; inset: 0;
-      z-index: 1002; flex-direction: column; background: #000;
+      z-index: 1002; background: #000;
+      align-items: stretch; justify-content: stretch;
     }
     #overlay-map.open { display: flex; }
+
+    #map-modal-container { display: flex; flex-direction: column; flex: 1; }
+    #map-body { position: relative; flex: 1; display: flex; flex-direction: column; }
     #map-picker { flex: 1; width: 100%; }
 
     #map-topbar {
@@ -188,7 +191,6 @@
     #btn-map-gps { background: var(--green-ll); color: var(--green); }
     #btn-map-confirm { background: var(--green); color: #fff; }
 
-    /* crosshair en el centro del mapa */
     #map-crosshair {
       position: absolute; top: 50%; left: 50%;
       transform: translate(-50%, -100%);
@@ -212,7 +214,6 @@
     .form-row { display: flex; gap: 12px; }
     .form-row .form-group { flex: 1; }
 
-    /* ubicación con botón mapa */
     .ubicacion-wrap { display: flex; gap: 8px; align-items: flex-end; }
     .ubicacion-wrap input { flex: 1; }
     .btn-map-open {
@@ -222,7 +223,6 @@
       align-items: center; justify-content: center;
     }
 
-    /* coords badge */
     .coords-badge {
       display: none; margin-top: 6px; font-size: .75rem; color: var(--muted);
       background: var(--green-ll); padding: 4px 10px; border-radius: 20px;
@@ -267,7 +267,6 @@
     }
     .ti-date { font-size: .75rem; color: var(--muted); }
     .ti-author { font-size: .75rem; font-weight: 600; color: var(--green); }
-    /* fotos en timeline */
     .ti-fotos {
       display: flex; gap: 6px; overflow-x: auto; padding: 10px 14px 6px;
       scrollbar-width: none;
@@ -299,16 +298,9 @@
     .ti-btn-edit { background: var(--green-ll); color: var(--green); }
     .ti-btn-del  { background: #fee2e2; color: #dc2626; }
 
-    /* fotos en formulario */
-    .fotos-grid {
-      display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px;
-    }
-    .foto-thumb {
-      position: relative; width: 80px; height: 80px;
-    }
-    .foto-thumb img {
-      width: 80px; height: 80px; object-fit: cover; border-radius: 8px;
-    }
+    .fotos-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+    .foto-thumb { position: relative; width: 80px; height: 80px; }
+    .foto-thumb img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; }
     .foto-thumb .foto-del {
       position: absolute; top: -6px; right: -6px;
       width: 20px; height: 20px; border-radius: 50%;
@@ -336,7 +328,161 @@
     .bar-bg { background: var(--green-ll); border-radius: 4px; height: 8px; }
     .bar-fill { background: var(--green); border-radius: 4px; height: 8px; transition: width .6s ease; }
 
-    @media (min-width: 640px) { body { max-width: 480px; margin: 0 auto; } }
+    /* ── DETAIL EMPTY STATE ── */
+    .detail-empty {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      height: 60vh; color: var(--muted); text-align: center; gap: 12px;
+    }
+    .detail-empty .empty-icon { font-size: 3.5rem; }
+    .detail-empty p { font-size: .92rem; line-height: 1.6; }
+
+    @media (min-width: 640px) and (max-width: 959px) {
+      body { max-width: 480px; margin: 0 auto; }
+    }
+
+    /* ════════════════════════════════
+       DESKTOP (≥ 960px)
+    ════════════════════════════════ */
+    @media (min-width: 960px) {
+      body {
+        max-width: 100%;
+        padding-bottom: 0;
+        display: grid;
+        grid-template-columns: 220px 1fr;
+        grid-template-rows: auto 1fr;
+        grid-template-areas:
+          "header  header"
+          "sidebar main";
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      header {
+        grid-area: header;
+        position: static;
+      }
+
+      /* Sidebar */
+      nav.bottom {
+        grid-area: sidebar;
+        position: static;
+        flex-direction: column;
+        border-top: none;
+        border-right: 1px solid var(--border);
+        padding: 16px 10px;
+        justify-content: flex-start;
+        gap: 4px;
+        height: 100%;
+        overflow-y: auto;
+        z-index: auto;
+      }
+
+      nav.bottom button {
+        flex: unset;
+        width: 100%;
+        flex-direction: row;
+        justify-content: flex-start;
+        padding: 10px 14px;
+        border-radius: 10px;
+        font-size: .88rem;
+        gap: 10px;
+        color: var(--text);
+        font-weight: 500;
+      }
+
+      nav.bottom button.active { color: var(--green); background: var(--green-ll); }
+      nav.bottom button:hover:not(.active) { background: var(--bg); }
+      nav.bottom button svg { width: 20px; height: 20px; flex-shrink: 0; }
+
+      #sidebar-new-btn {
+        display: flex !important;
+        width: 100%;
+        flex-direction: row;
+        align-items: center;
+        padding: 10px 14px;
+        border-radius: 10px;
+        font-size: .88rem;
+        gap: 10px;
+        border: none;
+        cursor: pointer;
+        background: var(--green);
+        color: #fff;
+        margin-top: auto;
+        font-weight: 700;
+        transition: opacity .2s;
+      }
+      #sidebar-new-btn:hover { opacity: .88; }
+      #sidebar-new-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
+
+      .fab { display: none !important; }
+
+      /* Two-panel main area */
+      .app-content {
+        grid-area: main;
+        display: flex;
+        overflow: hidden;
+        height: 100%;
+      }
+
+      .screen {
+        display: none;
+        padding: 20px;
+        overflow-y: auto;
+        height: 100%;
+      }
+
+      #screen-parcelas {
+        display: block !important;
+        width: 380px;
+        min-width: 280px;
+        flex-shrink: 0;
+        border-right: 1px solid var(--border);
+      }
+
+      #screen-detail { flex: 1; min-width: 0; }
+      #screen-detail.active { display: block; }
+
+      #screen-stats { flex: 1; min-width: 0; }
+      #screen-stats.active { display: block; }
+
+      .detail-back { display: none; }
+
+      /* Modals as centered dialogs */
+      .overlay {
+        align-items: center;
+        justify-content: center;
+      }
+
+      .sheet {
+        border-radius: var(--radius);
+        max-width: 580px;
+        max-height: 85vh;
+        animation: modalIn .2s ease;
+      }
+
+      @keyframes modalIn {
+        from { opacity: 0; transform: translateY(-14px) scale(.97); }
+        to   { opacity: 1; transform: translateY(0) scale(1); }
+      }
+
+      .sheet-handle { display: none; }
+
+      /* Map as centered modal */
+      #overlay-map {
+        background: rgba(0,0,0,.6);
+        align-items: center;
+        justify-content: center;
+      }
+
+      #map-modal-container {
+        flex: unset;
+        width: min(820px, 95vw);
+        height: min(600px, 88vh);
+        border-radius: var(--radius);
+        overflow: hidden;
+      }
+    }
   </style>
 </head>
 <body>
@@ -349,35 +495,37 @@
   <img src="hijolusa.png" alt="Hijolusa" style="height:26px;filter:brightness(0) invert(1);" />
 </header>
 
-<!-- ── LISTA ── -->
-<div class="screen active" id="screen-parcelas">
-  <div class="search-bar">
-    <input type="text" placeholder="🔍  Buscar parcela, variedad…" oninput="filterParcelas(this.value)" />
+<main class="app-content">
+  <!-- ── LISTA ── -->
+  <div class="screen active" id="screen-parcelas">
+    <div class="search-bar">
+      <input type="text" placeholder="🔍  Buscar parcela, variedad…" oninput="filterParcelas(this.value)" />
+    </div>
+    <div class="section-title">Mis parcelas</div>
+    <div id="parcelas-list"></div>
   </div>
-  <div class="section-title">Mis parcelas</div>
-  <div id="parcelas-list"></div>
-</div>
 
-<!-- ── DETALLE ── -->
-<div class="screen" id="screen-detail">
-  <button class="detail-back" onclick="goBack()">← Volver a parcelas</button>
-  <div id="detail-content"></div>
-</div>
-
-<!-- ── STATS ── -->
-<div class="screen" id="screen-stats">
-  <div class="section-title">Resumen de campaña</div>
-  <div class="stats-grid">
-    <div class="stat-card"><div class="stat-num" id="s-parcelas">0</div><div class="stat-label">Parcelas</div></div>
-    <div class="stat-card"><div class="stat-num" id="s-ha">0</div><div class="stat-label">Hectáreas totales</div></div>
-    <div class="stat-card"><div class="stat-num" id="s-fotos">0</div><div class="stat-label">Fotos</div></div>
-    <div class="stat-card"><div class="stat-num" id="s-agricultores">0</div><div class="stat-label">Agricultores</div></div>
+  <!-- ── DETALLE ── -->
+  <div class="screen" id="screen-detail">
+    <button class="detail-back" onclick="goBack()">← Volver a parcelas</button>
+    <div id="detail-content"></div>
   </div>
-  <div class="variety-bar-wrap"><h3>Distribución por variedad</h3><div id="variety-bars"></div></div>
-  <div class="variety-bar-wrap" style="margin-top:0"><h3>Superficie por agricultor</h3><div id="agricultor-bars"></div></div>
-</div>
 
-<!-- ── BOTTOM NAV ── -->
+  <!-- ── STATS ── -->
+  <div class="screen" id="screen-stats">
+    <div class="section-title">Resumen de campaña</div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-num" id="s-parcelas">0</div><div class="stat-label">Parcelas</div></div>
+      <div class="stat-card"><div class="stat-num" id="s-ha">0</div><div class="stat-label">Hectáreas totales</div></div>
+      <div class="stat-card"><div class="stat-num" id="s-fotos">0</div><div class="stat-label">Fotos</div></div>
+      <div class="stat-card"><div class="stat-num" id="s-agricultores">0</div><div class="stat-label">Agricultores</div></div>
+    </div>
+    <div class="variety-bar-wrap"><h3>Distribución por variedad</h3><div id="variety-bars"></div></div>
+    <div class="variety-bar-wrap" style="margin-top:0"><h3>Superficie por agricultor</h3><div id="agricultor-bars"></div></div>
+  </div>
+</main>
+
+<!-- ── BOTTOM NAV / SIDEBAR ── -->
 <nav class="bottom">
   <button class="active" onclick="switchTab('parcelas',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
@@ -387,6 +535,10 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
     Estadísticas
   </button>
+  <button id="sidebar-new-btn" onclick="openNewParcela()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    Nueva parcela
+  </button>
 </nav>
 
 <button class="fab" id="fab" onclick="openNewParcela()">＋</button>
@@ -395,22 +547,21 @@
      MODAL: MAPA SELECTOR
 ════════════════════════════════ -->
 <div id="overlay-map">
-  <div id="map-topbar">
-    <button class="map-close" onclick="closeMap()">✕</button>
-    <span>Elige la ubicación</span>
-  </div>
-
-  <!-- contenedor posición relativa para el crosshair -->
-  <div style="position:relative;flex:1;display:flex;flex-direction:column;">
-    <div id="map-picker"></div>
-    <div id="map-crosshair">📍</div>
-  </div>
-
-  <div id="map-bottombar">
-    <div id="map-address-display">Mueve el mapa para seleccionar la ubicación</div>
-    <div id="map-bottombar-btns">
-      <button id="btn-map-gps" onclick="centerOnGPS()">📡 Mi ubicación</button>
-      <button id="btn-map-confirm" onclick="confirmMapLocation()">Confirmar</button>
+  <div id="map-modal-container">
+    <div id="map-topbar">
+      <button class="map-close" onclick="closeMap()">✕</button>
+      <span>Elige la ubicación</span>
+    </div>
+    <div id="map-body">
+      <div id="map-picker"></div>
+      <div id="map-crosshair">📍</div>
+    </div>
+    <div id="map-bottombar">
+      <div id="map-address-display">Mueve el mapa para seleccionar la ubicación</div>
+      <div id="map-bottombar-btns">
+        <button id="btn-map-gps" onclick="centerOnGPS()">📡 Mi ubicación</button>
+        <button id="btn-map-confirm" onclick="confirmMapLocation()">Confirmar</button>
+      </div>
     </div>
   </div>
 </div>
@@ -427,7 +578,6 @@
         <label>Nombre / Identificador</label>
         <input type="text" id="f-nombre" placeholder="Ej: Parcela Norte 1" required />
       </div>
-
       <div class="form-group">
         <label>Ubicación</label>
         <div class="ubicacion-wrap">
@@ -436,7 +586,6 @@
         </div>
         <div class="coords-badge" id="coords-badge"></div>
       </div>
-
       <div class="form-row">
         <div class="form-group">
           <label>Superficie (ha)</label>
@@ -551,9 +700,21 @@ let parcelas = [
 let nextId = 4;
 let nextSegId = 8;
 let currentParcelaId = null;
-let editingSegId = null;      // null = nuevo, número = editar
-let currentFotos = [];        // array de dataURLs en el formulario
+let editingSegId = null;
+let currentFotos = [];
 let pickedLat = null, pickedLng = null;
+
+// ─── HELPERS ──────────────────────────────────────────────────────────────────
+function isDesktop() { return window.innerWidth >= 960; }
+
+function showEmptyDetail() {
+  document.getElementById('detail-content').innerHTML = `
+    <div class="detail-empty">
+      <div class="empty-icon">🌱</div>
+      <p>Selecciona una parcela<br>para ver el detalle</p>
+    </div>
+  `;
+}
 
 // ─── LEAFLET MAP PICKER ────────────────────────────────────────────────────────
 let mapPicker = null;
@@ -564,15 +725,12 @@ function openMap() {
   setTimeout(() => {
     if (!mapPicker) {
       mapPicker = L.map('map-picker', { zoomControl: true, attributionControl: false });
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19
-      }).addTo(mapPicker);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(mapPicker);
       mapPicker.setView([42.5, -5.0], 10);
       mapPicker.on('moveend', onMapMove);
     } else {
       mapPicker.invalidateSize();
     }
-    // Si ya había coords guardadas, centrar en ellas
     if (pickedLat) mapPicker.setView([pickedLat, pickedLng], 14);
     onMapMove();
   }, 50);
@@ -655,7 +813,6 @@ function initMiniMap(containerId, lat, lng) {
   m.setView([lat, lng], 13);
   L.circleMarker([lat, lng], { radius: 7, color: '#009A3C', fillColor: '#33B865', fillOpacity: 1, weight: 2 }).addTo(m);
   miniMaps[containerId] = m;
-  // Forzar recálculo de tiles una vez el contenedor está pintado
   setTimeout(() => m.invalidateSize(), 100);
   setTimeout(() => m.invalidateSize(), 400);
 }
@@ -668,7 +825,7 @@ function renderList(list) {
     return;
   }
   el.innerHTML = list.map(p => `
-    <div class="parcela-card" onclick="openDetail(${p.id})">
+    <div class="parcela-card${p.id === currentParcelaId ? ' selected' : ''}" data-id="${p.id}" onclick="openDetail(${p.id})">
       ${p.lat ? `<div class="card-map" id="mini-${p.id}"></div>` : ''}
       <div class="card-header">
         <h3>${p.nombre}</h3>
@@ -690,7 +847,6 @@ function renderList(list) {
     </div>
   `).join('');
 
-  // init mini maps after DOM update
   requestAnimationFrame(() => {
     list.forEach(p => {
       if (p.lat) initMiniMap(`mini-${p.id}`, p.lat, p.lng);
@@ -761,8 +917,16 @@ function openDetail(id) {
     <div class="timeline">${timeline || '<p style="color:var(--muted);text-align:center;padding:20px 0;">Sin seguimientos aún</p>'}</div>
   `;
 
-  showScreen('screen-detail');
-  document.getElementById('fab').style.display = 'none';
+  if (isDesktop()) {
+    document.getElementById('screen-stats').classList.remove('active');
+    document.getElementById('screen-detail').classList.add('active');
+    document.querySelectorAll('.parcela-card').forEach(c => c.classList.remove('selected'));
+    const card = document.querySelector(`.parcela-card[data-id="${id}"]`);
+    if (card) card.classList.add('selected');
+  } else {
+    showScreen('screen-detail');
+    document.getElementById('fab').style.display = 'none';
+  }
 
   if (p.lat) {
     requestAnimationFrame(() => initMiniMap(`detail-map-${p.id}`, p.lat, p.lng));
@@ -770,23 +934,40 @@ function openDetail(id) {
 }
 
 function goBack() {
-  showScreen('screen-parcelas');
-  document.getElementById('fab').style.display = 'flex';
   currentParcelaId = null;
+  if (isDesktop()) {
+    document.querySelectorAll('.parcela-card').forEach(c => c.classList.remove('selected'));
+    showEmptyDetail();
+  } else {
+    showScreen('screen-parcelas');
+    document.getElementById('fab').style.display = 'flex';
+  }
 }
 
 // ─── TABS ─────────────────────────────────────────────────────────────────────
 function switchTab(name, btn) {
-  goBack();
   document.querySelectorAll('nav.bottom button').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+
   if (name === 'stats') {
-    showScreen('screen-stats');
     renderStats();
-    document.getElementById('fab').style.display = 'none';
+    if (isDesktop()) {
+      document.getElementById('screen-detail').classList.remove('active');
+      document.getElementById('screen-stats').classList.add('active');
+    } else {
+      goBack();
+      showScreen('screen-stats');
+      document.getElementById('fab').style.display = 'none';
+    }
   } else {
-    showScreen('screen-parcelas');
-    document.getElementById('fab').style.display = 'flex';
+    if (isDesktop()) {
+      document.getElementById('screen-stats').classList.remove('active');
+      if (currentParcelaId) {
+        document.getElementById('screen-detail').classList.add('active');
+      }
+    } else {
+      goBack();
+    }
   }
 }
 
@@ -894,7 +1075,6 @@ function openEditSeguimiento(parcelaId, segId) {
   const s = p.seguimientos.find(x => x.id === segId);
   currentParcelaId = parcelaId;
   editingSegId = segId;
-  // cargar fotos existentes (excluimos las 'demo' que son placeholder)
   currentFotos = s.fotos.filter(f => f !== 'demo');
   renderFotosGrid();
   document.getElementById('seg-title').textContent = '✏️ Editar seguimiento';
@@ -917,13 +1097,11 @@ function saveSeguimiento(e) {
   const comentario = document.getElementById('f-comentario').value || 'Sin comentario.';
 
   if (editingSegId !== null) {
-    // EDITAR
     const s = p.seguimientos.find(x => x.id === editingSegId);
     s.estado = estado;
     s.comentario = comentario;
     s.fotos = currentFotos.length ? currentFotos : s.fotos;
   } else {
-    // NUEVO
     const today = new Date();
     const fecha = `${String(today.getDate()).padStart(2,'0')}/${String(today.getMonth()+1).padStart(2,'0')}/${today.getFullYear()}`;
     p.seguimientos.push({ id: nextSegId++, fecha, estado, comentario, fotos: [...currentFotos] });
@@ -939,6 +1117,10 @@ function closeIfBg(e, id) { if (e.target.id === id) closeSheet(id); }
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 renderList(parcelas);
+if (isDesktop()) {
+  document.getElementById('screen-detail').classList.add('active');
+  showEmptyDetail();
+}
 </script>
 </body>
 </html>
