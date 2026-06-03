@@ -162,17 +162,31 @@ function reverseGeocode(lat, lng) {
 }
 
 function centerOnGPS() {
-  if (!navigator.geolocation) { alert('Tu dispositivo no soporta geolocalización.'); return; }
   const el = document.getElementById('map-address-display');
+  if (!navigator.geolocation || !window.isSecureContext) {
+    el.className = '';
+    el.textContent = '⚠️ La geolocalización requiere HTTPS. Usa GitHub Pages o un servidor local.';
+    return;
+  }
   el.className = 'loading';
   el.textContent = 'Obteniendo tu posición…';
-  navigator.geolocation.getCurrentPosition(pos => {
-    const { latitude: lat, longitude: lng } = pos.coords;
-    mapPicker.setView([lat, lng], 15);
-  }, () => {
-    el.className = '';
-    el.textContent = 'No se pudo obtener la ubicación.';
-  });
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      const { latitude: lat, longitude: lng } = pos.coords;
+      mapPicker.setView([lat, lng], 15);
+    },
+    err => {
+      el.className = '';
+      if (err.code === 1) {
+        el.textContent = '⚠️ Permiso denegado. Permite la ubicación en el navegador e inténtalo de nuevo.';
+      } else if (err.code === 2) {
+        el.textContent = '⚠️ No se pudo detectar la ubicación del dispositivo.';
+      } else {
+        el.textContent = '⚠️ Tiempo de espera agotado. Inténtalo de nuevo.';
+      }
+    },
+    { timeout: 10000, enableHighAccuracy: false }
+  );
 }
 
 function confirmMapLocation() {
