@@ -2,7 +2,7 @@
 let parcelas = [
   {
     id: 1, nombre: 'La Cigueña',
-    ubicacion: 'Sahagún, León',
+    ubicacion: 'Villamanrique de la Condesa, Sevilla',
     lat: 37.2129, lng: -6.2832,
     superficie: 2.9, variedad: 'Alegría',
     agricultor: 'Miguelito', proveedor: 'Nevado e hijos', siembra: '03/03/2026', finalizada: false,
@@ -321,7 +321,7 @@ function openDetail(id) {
     <div class="timeline-item">
       <div class="ti-header">
         <span class="ti-date">📅 ${s.fecha}</span>
-        <span class="ti-author">${p.agricultor}</span>
+        <span class="ti-author">${s.tecnico || p.agricultor}</span>
       </div>
       ${s.fotos.length ? `
         <div class="ti-fotos">
@@ -604,6 +604,7 @@ function openSeguimiento() {
   renderFotosGrid();
   document.getElementById('seg-title').textContent = '📷 Añadir seguimiento';
   document.getElementById('f-estado').value = 'Normal';
+  document.getElementById('f-tecnico').value = '';
   document.getElementById('f-comentario').value = '';
   document.getElementById('overlay-seguimiento').classList.add('open');
 }
@@ -617,6 +618,7 @@ function openEditSeguimiento(parcelaId, segId) {
   renderFotosGrid();
   document.getElementById('seg-title').textContent = '✏️ Editar seguimiento';
   document.getElementById('f-estado').value = s.estado;
+  document.getElementById('f-tecnico').value = s.tecnico || '';
   document.getElementById('f-comentario').value = s.comentario;
   document.getElementById('overlay-seguimiento').classList.add('open');
 }
@@ -640,17 +642,19 @@ function saveSeguimiento(e) {
   e.preventDefault();
   const p = parcelas.find(x => x.id === currentParcelaId);
   const estado = document.getElementById('f-estado').value;
+  const tecnico = document.getElementById('f-tecnico').value.trim();
   const comentario = document.getElementById('f-comentario').value || 'Sin comentario.';
 
   if (editingSegId !== null) {
     const s = p.seguimientos.find(x => x.id === editingSegId);
     s.estado = estado;
+    s.tecnico = tecnico;
     s.comentario = comentario;
     s.fotos = currentFotos.length ? currentFotos : s.fotos;
   } else {
     const today = new Date();
     const fecha = `${String(today.getDate()).padStart(2,'0')}/${String(today.getMonth()+1).padStart(2,'0')}/${today.getFullYear()}`;
-    p.seguimientos.push({ id: nextSegId++, fecha, estado, comentario, fotos: [...currentFotos] });
+    p.seguimientos.push({ id: nextSegId++, fecha, estado, tecnico, comentario, fotos: [...currentFotos] });
   }
 
   closeSheet('overlay-seguimiento');
