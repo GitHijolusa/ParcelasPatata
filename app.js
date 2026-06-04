@@ -7,7 +7,7 @@ let parcelas = [
     superficie: 2.9, variedad: 'Alegría',
     agricultor: 'Miguelito', proveedor: 'Nevado e hijos', siembra: '03/03/2026', finalizada: false,
     seguimientos: [
-      { id: 1, fecha: '04/06/2026', estado: 'Maduración', comentario: 'C35. Calibres homogéneos. Están desbrozando para quemarlas y sacarlas para la semana que viene', fotos: ['images/imagen1.jpeg','images/imagen2.jpeg','images/imagen3.jpeg','images/imagen4.jpeg','images/imagen5.jpeg'] },
+      { id: 1, fecha: '04/06/2026', estado: 'Maduración', tecnico: 'Raquel', comentario: 'C35. Calibres homogéneos. Están desbrozando para quemarlas y sacarlas para la semana que viene', fotos: ['images/imagen1.jpeg','images/imagen2.jpeg','images/imagen3.jpeg','images/imagen4.jpeg','images/imagen5.jpeg'] },
     ]
   },
   {
@@ -17,9 +17,9 @@ let parcelas = [
     superficie: 2.5, variedad: 'Agria',
     agricultor: 'Manuel García', proveedor: 'Semillas Castilla S.L.', siembra: '15/03/2026', finalizada: false,
     seguimientos: [
-      { id: 1, fecha: '20/03/2026', estado: 'Brotación', comentario: 'Se aprecian los primeros brotes en la mitad norte. Suelo con buena humedad.', fotos: [] },
-      { id: 2, fecha: '05/04/2026', estado: 'Crecimiento', comentario: 'Plantas de 15 cm aprox. Primer abonado. Sin incidencias.', fotos: ['demo'] },
-      { id: 3, fecha: '28/04/2026', estado: 'Floración', comentario: 'Floración uniforme. Tratamiento preventivo contra mildiu.', fotos: ['demo','demo'] },
+      { id: 1, fecha: '20/03/2026', estado: 'Brotación', tecnico: 'Carlos', comentario: 'Se aprecian los primeros brotes en la mitad norte. Suelo con buena humedad.', fotos: [] },
+      { id: 2, fecha: '05/04/2026', estado: 'Crecimiento', tecnico: 'María', comentario: 'Plantas de 15 cm aprox. Primer abonado. Sin incidencias.', fotos: ['demo'] },
+      { id: 3, fecha: '28/04/2026', estado: 'Floración', tecnico: 'Juan', comentario: 'Floración uniforme. Tratamiento preventivo contra mildiu.', fotos: ['demo','demo'] },
     ]
   },
   {
@@ -29,8 +29,8 @@ let parcelas = [
     superficie: 1.8, variedad: 'Jazzy',
     agricultor: 'Rosa Fernández', proveedor: 'AgroSemillas Norte', siembra: '22/03/2026', finalizada: false,
     seguimientos: [
-      { id: 4, fecha: '28/03/2026', estado: 'Brotación', comentario: 'Emergencia desigual en zona sur. Posible compactación.', fotos: [] },
-      { id: 5, fecha: '15/04/2026', estado: '⚠️ Incidencia', comentario: 'Síntomas de alternaria en hojas basales. Tratamiento con fungicida cúprico.', fotos: ['demo'] },
+      { id: 4, fecha: '28/03/2026', estado: 'Brotación', tecnico: 'Raquel', comentario: 'Emergencia desigual en zona sur. Posible compactación.', fotos: [] },
+      { id: 5, fecha: '15/04/2026', estado: '⚠️ Incidencia', tecnico: 'Raquel', comentario: 'Síntomas de alternaria en hojas basales. Tratamiento con fungicida cúprico.', fotos: ['demo'] },
     ]
   },
   {
@@ -40,8 +40,8 @@ let parcelas = [
     superficie: 3.2, variedad: 'Soprano',
     agricultor: 'Juan Diez', proveedor: 'Semillas Castilla S.L.', siembra: '10/03/2026', finalizada: false,
     seguimientos: [
-      { id: 6, fecha: '18/03/2026', estado: 'Brotación', comentario: 'Emergencia excelente y uniforme.', fotos: ['demo'] },
-      { id: 7, fecha: '02/04/2026', estado: 'Crecimiento', comentario: 'Buen desarrollo vegetativo. Riego por aspersión puesto en marcha.', fotos: [] },
+      { id: 6, fecha: '18/03/2026', estado: 'Brotación', tecnico: 'Raquel', comentario: 'Emergencia excelente y uniforme.', fotos: ['demo'] },
+      { id: 7, fecha: '02/04/2026', estado: 'Crecimiento', tecnico: 'Raquel', comentario: 'Buen desarrollo vegetativo. Riego por aspersión puesto en marcha.', fotos: [] },
     ]
   },
   {
@@ -51,9 +51,9 @@ let parcelas = [
     superficie: 1.5, variedad: 'Lucinda',
     agricultor: 'Pedro Álvarez', proveedor: 'AgroSemillas Norte', siembra: '18/03/2026', finalizada: false,
     seguimientos: [
-      { id: 8, fecha: '25/03/2026', estado: 'Brotación', comentario: 'Brotación uniforme en toda la parcela. Suelo bien preparado tras el laboreo de invierno.', fotos: [] },
-      { id: 9, fecha: '10/04/2026', estado: 'Crecimiento', comentario: 'Plantas de 20 cm. Segundo riego realizado. Se aplica abono de fondo nitrogenado.', fotos: ['demo'] },
-      { id: 10, fecha: '02/05/2026', estado: 'Floración', comentario: 'Inicio de floración. Aspecto general muy bueno, sin incidencias destacadas.', fotos: ['demo', 'demo'] },
+      { id: 8, fecha: '25/03/2026', estado: 'Brotación', tecnico: 'David', comentario: 'Brotación uniforme en toda la parcela. Suelo bien preparado tras el laboreo de invierno.', fotos: [] },
+      { id: 9, fecha: '10/04/2026', estado: 'Crecimiento', tecnico: 'David', comentario: 'Plantas de 20 cm. Segundo riego realizado. Se aplica abono de fondo nitrogenado.', fotos: ['demo'] },
+      { id: 10, fecha: '02/05/2026', estado: 'Floración', tecnico: 'David', comentario: 'Inicio de floración. Aspecto general muy bueno, sin incidencias destacadas.', fotos: ['demo', 'demo'] },
     ]
   },
   {
@@ -63,9 +63,9 @@ let parcelas = [
     superficie: 2.8, variedad: 'Babylon',
     agricultor: 'Carmen López', proveedor: 'Semillas Castilla S.L.', siembra: '12/03/2026', finalizada: false,
     seguimientos: [
-      { id: 11, fecha: '20/03/2026', estado: 'Brotación', comentario: 'Emergencia algo irregular en el extremo oeste. Se revisa la profundidad de siembra.', fotos: [] },
-      { id: 12, fecha: '08/04/2026', estado: '⚠️ Incidencia', comentario: 'Presencia de pulgón en los brotes apicales. Tratamiento insecticida preventivo aplicado.', fotos: ['demo'] },
-      { id: 13, fecha: '29/04/2026', estado: 'Crecimiento', comentario: 'Recuperación satisfactoria tras el tratamiento. Buen vigor vegetativo en toda la parcela.', fotos: ['demo'] },
+      { id: 11, fecha: '20/03/2026', estado: 'Brotación', tecnico: 'Raquel', comentario: 'Emergencia algo irregular en el extremo oeste. Se revisa la profundidad de siembra.', fotos: [] },
+      { id: 12, fecha: '08/04/2026', estado: '⚠️ Incidencia', tecnico: 'Raquel', comentario: 'Presencia de pulgón en los brotes apicales. Tratamiento insecticida preventivo aplicado.', fotos: ['demo'] },
+      { id: 13, fecha: '29/04/2026', estado: 'Crecimiento', tecnico: 'Raquel', comentario: 'Recuperación satisfactoria tras el tratamiento. Buen vigor vegetativo en toda la parcela.', fotos: ['demo'] },
     ]
   },
   {
@@ -75,10 +75,10 @@ let parcelas = [
     superficie: 3.6, variedad: 'Agria',
     agricultor: 'Manuel García', proveedor: 'Semillas Castilla S.L.', siembra: '05/03/2025', finalizada: true,
     seguimientos: [
-      { id: 14, fecha: '14/03/2025', estado: 'Brotación', comentario: 'Emergencia uniforme en toda la parcela. Condiciones de humedad óptimas.', fotos: ['demo'] },
-      { id: 15, fecha: '01/04/2025', estado: 'Crecimiento', comentario: 'Plantas de 18 cm. Primer abonado de cobertera aplicado sin incidencias.', fotos: [] },
-      { id: 16, fecha: '25/04/2025', estado: 'Floración', comentario: 'Floración completa. Tratamiento preventivo contra mildiu y alternaria realizado.', fotos: ['demo', 'demo'] },
-      { id: 17, fecha: '18/07/2025', estado: 'Maduración', comentario: 'Recolección finalizada. Rendimiento estimado de 42 t/ha. Campaña muy satisfactoria.', fotos: ['demo'] },
+      { id: 14, fecha: '14/03/2025', estado: 'Brotación', tecnico: 'Raquel', comentario: 'Emergencia uniforme en toda la parcela. Condiciones de humedad óptimas.', fotos: ['demo'] },
+      { id: 15, fecha: '01/04/2025', estado: 'Crecimiento', tecnico: 'Raquel', comentario: 'Plantas de 18 cm. Primer abonado de cobertera aplicado sin incidencias.', fotos: [] },
+      { id: 16, fecha: '25/04/2025', estado: 'Floración', tecnico: 'Raquel', comentario: 'Floración completa. Tratamiento preventivo contra mildiu y alternaria realizado.', fotos: ['demo', 'demo'] },
+      { id: 17, fecha: '18/07/2025', estado: 'Maduración', tecnico: 'Raquel', comentario: 'Recolección finalizada. Rendimiento estimado de 42 t/ha. Campaña muy satisfactoria.', fotos: ['demo'] },
     ]
   },
   {
@@ -88,10 +88,10 @@ let parcelas = [
     superficie: 1.9, variedad: 'Jazzy',
     agricultor: 'Rosa Fernández', proveedor: 'AgroSemillas Norte', siembra: '18/03/2025', finalizada: true,
     seguimientos: [
-      { id: 18, fecha: '27/03/2025', estado: 'Brotación', comentario: 'Brotación desigual en la zona norte. Se realiza resiembra puntual en los calveros detectados.', fotos: [] },
-      { id: 19, fecha: '14/04/2025', estado: '⚠️ Incidencia', comentario: 'Ataque moderado de alternaria. Tratamiento con fungicida sistémico de contacto aplicado en dos pases.', fotos: ['demo'] },
-      { id: 20, fecha: '10/05/2025', estado: 'Floración', comentario: 'Recuperación buena tras el tratamiento. Floración en curso con aspecto general correcto.', fotos: ['demo'] },
-      { id: 21, fecha: '25/07/2025', estado: 'Maduración', comentario: 'Cosecha concluida. Rendimiento de 36 t/ha, algo por debajo de la media por la incidencia temprana.', fotos: [] },
+      { id: 18, fecha: '27/03/2025', estado: 'Brotación', tecnico: 'Raquel', comentario: 'Brotación desigual en la zona norte. Se realiza resiembra puntual en los calveros detectados.', fotos: [] },
+      { id: 19, fecha: '14/04/2025', estado: '⚠️ Incidencia', tecnico: 'Raquel', comentario: 'Ataque moderado de alternaria. Tratamiento con fungicida sistémico de contacto aplicado en dos pases.', fotos: ['demo'] },
+      { id: 20, fecha: '10/05/2025', estado: 'Floración', tecnico: 'David', comentario: 'Recuperación buena tras el tratamiento. Floración en curso con aspecto general correcto.', fotos: ['demo'] },
+      { id: 21, fecha: '25/07/2025', estado: 'Maduración', tecnico: 'David', comentario: 'Cosecha concluida. Rendimiento de 36 t/ha, algo por debajo de la media por la incidencia temprana.', fotos: [] },
     ]
   },
 ];
