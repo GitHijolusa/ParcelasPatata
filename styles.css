@@ -54,15 +54,15 @@ nav.bottom button {
   font-size: .65rem; color: var(--muted); transition: color .2s;
 }
 nav.bottom button.active { color: var(--green); }
-nav.bottom button svg { width: 22px; height: 22px; }
+nav.bottom button svg { width: 24px; height: 24px; }
 #sidebar-new-btn { display: flex; color: var(--green); font-weight: 700; }
 .new-btn-circle {
-  width: 34px; height: 34px; border-radius: 50%;
+  width: 24px; height: 24px; border-radius: 50%;
   background: var(--green);
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
 }
-.new-btn-circle svg { width: 20px; height: 20px; stroke: #fff; }
+nav.bottom button .new-btn-circle svg { width: 13px; height: 13px; stroke: #fff; }
 
 /* ── SCREENS ── */
 .screen { display: none; padding: 16px; }
