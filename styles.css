@@ -61,7 +61,7 @@ nav.bottom button svg { width: 22px; height: 22px; }
   font-weight: 700;
   background: var(--green);
   margin: 7px 5px;
-  border-radius: 10px;
+  border-radius: 999px;
   padding: 6px 2px 8px;
 }
 
