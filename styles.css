@@ -55,10 +55,16 @@ nav.bottom button {
 }
 nav.bottom button.active { color: var(--green); }
 nav.bottom button svg { width: 24px; height: 24px; }
-#sidebar-new-btn { display: flex; color: var(--green); font-weight: 700; }
+#sidebar-new-btn { display: flex; }
+.new-btn-pill {
+  display: flex; flex-direction: row; align-items: center; gap: 6px;
+  background: var(--green); border-radius: 999px;
+  padding: 4px 12px 4px 4px;
+  color: #fff; font-size: .65rem; font-weight: 700;
+}
 .new-btn-circle {
   width: 24px; height: 24px; border-radius: 50%;
-  background: var(--green);
+  background: rgba(0,0,0,0.15);
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
 }

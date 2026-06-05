@@ -76,44 +76,6 @@ let parcelas = [
       { id: 10, fecha: '02/05/2026', estado: 'Floración', tecnico: 'David', comentario: 'Inicio de floración. Aspecto general muy bueno, sin incidencias destacadas.', fotos: ['demo', 'demo'] },
     ]
   },
-  {
-    id: 7, nombre: 'El Barrero',
-    ubicacion: 'Grajal de Campos, León',
-    lat: 42.257, lng: -5.057,
-    superficie: 2.8, variedad: 'Babylon',
-    agricultor: 'Carmen López', proveedor: 'Semillas Castilla S.L.', siembra: '12/03/2026', finalizada: false,
-    seguimientos: [
-      { id: 11, fecha: '20/03/2026', estado: 'Brotación', tecnico: 'Raquel', comentario: 'Emergencia algo irregular en el extremo oeste. Se revisa la profundidad de siembra.', fotos: [] },
-      { id: 12, fecha: '08/04/2026', estado: '⚠️ Incidencia', tecnico: 'Raquel', comentario: 'Presencia de pulgón en los brotes apicales. Tratamiento insecticida preventivo aplicado.', fotos: ['demo'] },
-      { id: 13, fecha: '29/04/2026', estado: 'Crecimiento', tecnico: 'Raquel', comentario: 'Recuperación satisfactoria tras el tratamiento. Buen vigor vegetativo en toda la parcela.', fotos: ['demo'] },
-    ]
-  },
-  {
-    id: 9, nombre: 'Valdearcos Sur',
-    ubicacion: 'Valdearcos de la Vega, León',
-    lat: 42.320, lng: -5.112,
-    superficie: 3.6, variedad: 'Agria',
-    agricultor: 'Manuel García', proveedor: 'Semillas Castilla S.L.', siembra: '05/03/2025', finalizada: true,
-    seguimientos: [
-      { id: 14, fecha: '14/03/2025', estado: 'Brotación', tecnico: 'Raquel', comentario: 'Emergencia uniforme en toda la parcela. Condiciones de humedad óptimas.', fotos: ['demo'] },
-      { id: 15, fecha: '01/04/2025', estado: 'Crecimiento', tecnico: 'Raquel', comentario: 'Plantas de 18 cm. Primer abonado de cobertera aplicado sin incidencias.', fotos: [] },
-      { id: 16, fecha: '25/04/2025', estado: 'Floración', tecnico: 'Raquel', comentario: 'Floración completa. Tratamiento preventivo contra mildiu y alternaria realizado.', fotos: ['demo', 'demo'] },
-      { id: 17, fecha: '18/07/2025', estado: 'Maduración', tecnico: 'Raquel', comentario: 'Recolección finalizada. Rendimiento estimado de 42 t/ha. Campaña muy satisfactoria.', fotos: ['demo'] },
-    ]
-  },
-  {
-    id: 10, nombre: 'Finca La Ermita',
-    ubicacion: 'Joarilla de las Matas, León',
-    lat: 42.348, lng: -4.952,
-    superficie: 1.9, variedad: 'Jazzy',
-    agricultor: 'Rosa Fernández', proveedor: 'AgroSemillas Norte', siembra: '18/03/2025', finalizada: true,
-    seguimientos: [
-      { id: 18, fecha: '27/03/2025', estado: 'Brotación', tecnico: 'Raquel', comentario: 'Brotación desigual en la zona norte. Se realiza resiembra puntual en los calveros detectados.', fotos: [] },
-      { id: 19, fecha: '14/04/2025', estado: '⚠️ Incidencia', tecnico: 'Raquel', comentario: 'Ataque moderado de alternaria. Tratamiento con fungicida sistémico de contacto aplicado en dos pases.', fotos: ['demo'] },
-      { id: 20, fecha: '10/05/2025', estado: 'Floración', tecnico: 'David', comentario: 'Recuperación buena tras el tratamiento. Floración en curso con aspecto general correcto.', fotos: ['demo'] },
-      { id: 21, fecha: '25/07/2025', estado: 'Maduración', tecnico: 'David', comentario: 'Cosecha concluida. Rendimiento de 36 t/ha, algo por debajo de la media por la incidencia temprana.', fotos: [] },
-    ]
-  },
 ];
 let nextId = 8;
 let nextSegId = 22;
