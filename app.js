@@ -47,7 +47,7 @@ let parcelas = [
     ubicacion: 'Cistierna, León',
     lat: 42.800, lng: -5.131,
     superficie: 1.8, variedad: 'Jazzy',
-    agricultor: 'Rosa Fernández', proveedor: 'AgroSemillas Norte', siembra: '22/03/2026', finalizada: false,
+    agricultor: 'Rosa Fernández', proveedor: 'AgroSemillas Norte', siembra: '22/03/2026', finalizada: true,
     seguimientos: [
       { id: 4, fecha: '28/03/2026', estado: 'Brotación', tecnico: 'Raquel', comentario: 'Emergencia desigual en zona sur. Posible compactación.', fotos: [] },
       { id: 5, fecha: '15/04/2026', estado: '⚠️ Incidencia', tecnico: 'Raquel', comentario: 'Síntomas de alternaria en hojas basales. Tratamiento con fungicida cúprico.', fotos: ['demo'] },
@@ -58,7 +58,7 @@ let parcelas = [
     ubicacion: 'Almanza, León',
     lat: 42.660, lng: -4.981,
     superficie: 3.2, variedad: 'Soprano',
-    agricultor: 'Juan Diez', proveedor: 'Semillas Castilla S.L.', siembra: '10/03/2026', finalizada: false,
+    agricultor: 'Juan Diez', proveedor: 'Semillas Castilla S.L.', siembra: '10/03/2026', finalizada: true,
     seguimientos: [
       { id: 6, fecha: '18/03/2026', estado: 'Brotación', tecnico: 'Raquel', comentario: 'Emergencia excelente y uniforme.', fotos: ['demo'] },
       { id: 7, fecha: '02/04/2026', estado: 'Crecimiento', tecnico: 'Raquel', comentario: 'Buen desarrollo vegetativo. Riego por aspersión puesto en marcha.', fotos: [] },
@@ -69,7 +69,7 @@ let parcelas = [
     ubicacion: 'Cea, León',
     lat: 42.461, lng: -5.020,
     superficie: 1.5, variedad: 'Lucinda',
-    agricultor: 'Pedro Álvarez', proveedor: 'AgroSemillas Norte', siembra: '18/03/2026', finalizada: false,
+    agricultor: 'Pedro Álvarez', proveedor: 'AgroSemillas Norte', siembra: '18/03/2026', finalizada: true,
     seguimientos: [
       { id: 8, fecha: '25/03/2026', estado: 'Brotación', tecnico: 'David', comentario: 'Brotación uniforme en toda la parcela. Suelo bien preparado tras el laboreo de invierno.', fotos: [] },
       { id: 9, fecha: '10/04/2026', estado: 'Crecimiento', tecnico: 'David', comentario: 'Plantas de 20 cm. Segundo riego realizado. Se aplica abono de fondo nitrogenado.', fotos: ['demo'] },
