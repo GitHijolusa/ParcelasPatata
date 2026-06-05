@@ -57,9 +57,9 @@ nav.bottom button.active { color: var(--green); }
 nav.bottom button svg { width: 24px; height: 24px; }
 #sidebar-new-btn { display: flex; }
 .new-btn-pill {
-  display: flex; flex-direction: row; align-items: center; gap: 6px;
-  background: var(--green); border-radius: 999px;
-  padding: 4px 12px 4px 4px;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  background: var(--green); border-radius: 14px;
+  padding: 6px 12px;
   color: #fff; font-size: .65rem; font-weight: 700;
 }
 .new-btn-circle {
