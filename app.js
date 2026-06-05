@@ -10,8 +10,28 @@ let parcelas = [
       { id: 1, fecha: '04/06/2026', estado: 'Maduración', tecnico: 'Raquel', comentario: 'C35. Calibres homogéneos. Están desbrozando para quemarlas y sacarlas para la semana que viene', fotos: ['images/imagen1.jpeg','images/imagen2.jpeg','images/imagen3.jpeg','images/imagen4.jpeg','images/imagen5.jpeg'] },
     ]
   },
+    {
+    id: 2, nombre: 'La Palma',
+    ubicacion: 'Los Mandriles, Murcia',
+    lat: 37.6573918, lng: -0.9654679,
+    superficie: 4, variedad: 'Memphis',
+    agricultor: 'Isidro León', proveedor: 'Interagro', siembra: '10/03/2026', finalizada: false,
+    seguimientos: [
+      { id: 1, fecha: '04/05/2026', estado: 'Maduración', tecnico: 'Raquel', comentario: '2 camiones. Buen color, Destrío por alguna que no ha rematado la piel', fotos: ['images/Ejemplo 1 1.jpeg', 'images/Ejemplo 1 2.jpeg', 'images/Ejemplo 1 3.jpeg', 'images/Ejemplo 1 4.jpeg', 'images/Ejemplo 1 5.jpeg', 'images/Ejemplo 1 6.jpeg',] },
+    ]
+  },
+    {
+    id: 3, nombre: 'Fuente Álamo',
+    ubicacion: 'Lo Jorge, Murcia',
+    lat: 37.7210287, lng: -1.2058182,
+    superficie: 5, variedad: 'Lucinda',
+    agricultor: 'Asindol', proveedor: 'Interagro', siembra: '15/03/2026', finalizada: false,
+    seguimientos: [
+      { id: 1, fecha: '20/05/2026', estado: 'Maduración', tecnico: 'David', comentario: 'Muy similar a las anteriores, tienen algo menos de piel.', fotos: ['images/Ejemplo 2 1.jpeg', 'images/Ejemplo 2 2.jpeg', 'images/Ejemplo 2 3.jpeg', 'images/Ejemplo 2 4.jpeg'] },
+    ]
+  },
   {
-    id: 2, nombre: 'Parcela Norte A',
+    id: 4, nombre: 'Parcela Norte A',
     ubicacion: 'Sahagún, León',
     lat: 42.371, lng: -5.030,
     superficie: 2.5, variedad: 'Agria',
@@ -23,7 +43,7 @@ let parcelas = [
     ]
   },
   {
-    id: 3, nombre: 'Finca El Pinar',
+    id: 5, nombre: 'Finca El Pinar',
     ubicacion: 'Cistierna, León',
     lat: 42.800, lng: -5.131,
     superficie: 1.8, variedad: 'Jazzy',
@@ -34,7 +54,7 @@ let parcelas = [
     ]
   },
   {
-    id: 4, nombre: 'Los Llanos B',
+    id: 6, nombre: 'Los Llanos B',
     ubicacion: 'Almanza, León',
     lat: 42.660, lng: -4.981,
     superficie: 3.2, variedad: 'Soprano',
@@ -45,7 +65,7 @@ let parcelas = [
     ]
   },
   {
-    id: 5, nombre: 'Vega del Río',
+    id: 7, nombre: 'Vega del Río',
     ubicacion: 'Cea, León',
     lat: 42.461, lng: -5.020,
     superficie: 1.5, variedad: 'Lucinda',
@@ -57,7 +77,7 @@ let parcelas = [
     ]
   },
   {
-    id: 6, nombre: 'El Barrero',
+    id: 7, nombre: 'El Barrero',
     ubicacion: 'Grajal de Campos, León',
     lat: 42.257, lng: -5.057,
     superficie: 2.8, variedad: 'Babylon',
@@ -69,7 +89,7 @@ let parcelas = [
     ]
   },
   {
-    id: 7, nombre: 'Valdearcos Sur',
+    id: 9, nombre: 'Valdearcos Sur',
     ubicacion: 'Valdearcos de la Vega, León',
     lat: 42.320, lng: -5.112,
     superficie: 3.6, variedad: 'Agria',
@@ -82,7 +102,7 @@ let parcelas = [
     ]
   },
   {
-    id: 8, nombre: 'Finca La Ermita',
+    id: 10, nombre: 'Finca La Ermita',
     ubicacion: 'Joarilla de las Matas, León',
     lat: 42.348, lng: -4.952,
     superficie: 1.9, variedad: 'Jazzy',
