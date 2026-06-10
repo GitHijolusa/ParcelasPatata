@@ -27,7 +27,7 @@ let parcelas = [
     superficie: 5, variedad: 'Lucinda',
     agricultor: 'Asindol', proveedor: 'Interagro', siembra: '15/03/2026', finalizada: false,
     seguimientos: [
-      { id: 1, fecha: '20/05/2026', estado: 'Maduración', tecnico: 'David', comentario: 'Muy similar a las anteriores, tienen algo menos de piel.', fotos: ['images/Ejemplo 2 1.jpeg', 'images/Ejemplo 2 2.jpeg', 'images/Ejemplo 2 3.jpeg', 'images/Ejemplo 2 4.jpeg'] },
+      { id: 1, fecha: '20/05/2026', estado: 'Maduración', tecnico: 'David', comentario: 'Muy similar a las anteriores, tienen algo menos de piel.', fotos: ['images/ejemplo 2 1.jpeg', 'images/ejemplo 2 2.jpeg', 'images/ejemplo 2 3.jpeg', 'images/ejemplo 2 4.jpeg'] },
     ]
   },
   {
@@ -305,13 +305,15 @@ function openDetail(id) {
         <span class="ti-date">📅 ${s.fecha}</span>
         <span class="ti-author">${s.tecnico || p.agricultor}</span>
       </div>
-      ${s.fotos.length ? `
-        <div class="ti-fotos">
+      ${s.fotos.length ? (() => {
+        const realFotos = s.fotos.filter(f => f !== 'demo');
+        return `<div class="ti-fotos">
           ${s.fotos.map(f => f === 'demo'
             ? `<div class="demo-foto"><span style="font-size:2rem">🌿</span><span>Foto</span></div>`
-            : `<img src="${f}" onclick="openFoto(this.src)" />`
+            : `<img src="${f}" onclick='openFoto(${JSON.stringify(realFotos)},${realFotos.indexOf(f)})' />`
           ).join('')}
-        </div>` : ''}
+        </div>`;
+      })() : ''}
       <span class="ti-tag">${s.estado}</span>
       <div class="ti-comment">${s.comentario}</div>
       <div class="ti-actions">
@@ -554,7 +556,7 @@ function saveParcela(e) {
 function renderFotosGrid() {
   document.getElementById('fotos-grid').innerHTML = currentFotos.map((f, i) => `
     <div class="foto-thumb">
-      <img src="${f}" onclick="openFoto(this.src)" />
+      <img src="${f}" onclick='openFoto(${JSON.stringify(currentFotos)},${i})' />
       <button type="button" class="foto-del" onclick="removeFoto(${i})">✕</button>
     </div>
   `).join('');
@@ -705,13 +707,30 @@ function reactivarParcela(id) {
 }
 
 // ─── UTILS ────────────────────────────────────────────────────────────────────
-function openFoto(src) {
-  document.getElementById('foto-grande').src = src;
+let lightboxFotos = [];
+let lightboxIdx = 0;
+
+function openFoto(fotos, idx) {
+  lightboxFotos = fotos;
+  lightboxIdx = idx;
+  document.getElementById('foto-grande').src = fotos[idx];
   document.getElementById('overlay-foto').classList.add('open');
+  updateLightboxNav();
+}
+function lightboxPrev() {
+  if (lightboxIdx > 0) { lightboxIdx--; document.getElementById('foto-grande').src = lightboxFotos[lightboxIdx]; updateLightboxNav(); }
+}
+function lightboxNext() {
+  if (lightboxIdx < lightboxFotos.length - 1) { lightboxIdx++; document.getElementById('foto-grande').src = lightboxFotos[lightboxIdx]; updateLightboxNav(); }
+}
+function updateLightboxNav() {
+  document.getElementById('foto-prev').style.display = lightboxIdx > 0 ? 'flex' : 'none';
+  document.getElementById('foto-next').style.display = lightboxIdx < lightboxFotos.length - 1 ? 'flex' : 'none';
 }
 function closeFoto() {
   document.getElementById('overlay-foto').classList.remove('open');
   document.getElementById('foto-grande').src = '';
+  lightboxFotos = [];
 }
 
 function showConfirm({ icon, title, msg, btnLabel, btnClass = 'btn btn-primary', onOk }) {
@@ -729,6 +748,13 @@ function closeSheet(id) { document.getElementById(id).classList.remove('open'); 
 function closeIfBg(e, id) { if (e.target.id === id) closeSheet(id); }
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('overlay-foto').classList.contains('open')) return;
+  if (e.key === 'ArrowLeft') lightboxPrev();
+  else if (e.key === 'ArrowRight') lightboxNext();
+  else if (e.key === 'Escape') closeFoto();
+});
+
 renderList(parcelas.filter(p => !p.finalizada));
 if (isDesktop()) {
   document.getElementById('screen-detail').classList.add('active');

@@ -91,7 +91,9 @@
 ════════════════════════════════ -->
 <div id="overlay-foto" onclick="closeFoto()">
   <button id="foto-close" onclick="closeFoto()">✕</button>
+  <button id="foto-prev" class="foto-nav" onclick="event.stopPropagation();lightboxPrev()">‹</button>
   <img id="foto-grande" src="" alt="" />
+  <button id="foto-next" class="foto-nav" onclick="event.stopPropagation();lightboxNext()">›</button>
 </div>
 
 <!-- ════════════════════════════════
