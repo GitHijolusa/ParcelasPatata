@@ -58,8 +58,8 @@ nav.bottom button svg { width: 24px; height: 24px; }
 #sidebar-new-btn { display: flex; padding-bottom: 14px; }
 .new-btn-pill {
   display: flex; flex-direction: column; align-items: center; gap: 3px;
-  background: var(--green); border-radius: 14px;
-  padding: 6px 12px;
+  background: var(--green); border-radius: 999px;
+  padding: 6px 14px;
   color: #fff; font-size: .65rem; font-weight: 700;
 }
 .new-btn-circle {
@@ -69,6 +69,7 @@ nav.bottom button svg { width: 24px; height: 24px; }
   flex-shrink: 0;
 }
 nav.bottom button .new-btn-circle svg { width: 13px; height: 13px; stroke: #fff; }
+nav.bottom button .new-btn-pill svg { width: 16px; height: 16px; stroke: #fff; }
 
 /* ── SCREENS ── */
 .screen { display: none; padding: 16px; }
@@ -519,6 +520,8 @@ textarea { resize: vertical; min-height: 80px; }
   }
   #sidebar-new-btn:hover { opacity: .88; }
   #sidebar-new-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
+  .new-btn-pill { display: contents; }
+  nav.bottom button .new-btn-pill svg { width: 20px; height: 20px; }
 
 
   /* Two-panel main area */
