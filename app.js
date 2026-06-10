@@ -755,6 +755,19 @@ document.addEventListener('keydown', e => {
   else if (e.key === 'Escape') closeFoto();
 });
 
+(function() {
+  let swipeStartX = null;
+  const overlay = document.getElementById('overlay-foto');
+  overlay.addEventListener('touchstart', e => { swipeStartX = e.touches[0].clientX; }, { passive: true });
+  overlay.addEventListener('touchend', e => {
+    if (swipeStartX === null) return;
+    const dx = e.changedTouches[0].clientX - swipeStartX;
+    swipeStartX = null;
+    if (Math.abs(dx) < 50) return;
+    if (dx < 0) lightboxNext(); else lightboxPrev();
+  }, { passive: true });
+})();
+
 renderList(parcelas.filter(p => !p.finalizada));
 if (isDesktop()) {
   document.getElementById('screen-detail').classList.add('active');
