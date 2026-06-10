@@ -417,10 +417,11 @@ textarea { resize: vertical; min-height: 80px; }
 .foto-nav {
   position: fixed; top: 50%; transform: translateY(-50%);
   background: rgba(255,255,255,.15); color: #fff; border: none;
-  width: 44px; height: 44px; border-radius: 50%; font-size: 2rem; line-height: 1;
+  width: 44px; height: 44px; border-radius: 50%;
   cursor: pointer; display: flex; align-items: center; justify-content: center;
   transition: background .2s; z-index: 2001; user-select: none;
 }
+.foto-nav svg { width: 22px; height: 22px; stroke: #fff; }
 .foto-nav:hover { background: rgba(255,255,255,.3); }
 .foto-nav[style*="none"] { display: none; }
 #foto-prev { left: 16px; }

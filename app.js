@@ -27,7 +27,7 @@ let parcelas = [
     superficie: 5, variedad: 'Lucinda',
     agricultor: 'Asindol', proveedor: 'Interagro', siembra: '15/03/2026', finalizada: false,
     seguimientos: [
-      { id: 1, fecha: '20/05/2026', estado: 'Maduración', tecnico: 'David', comentario: 'Muy similar a las anteriores, tienen algo menos de piel.', fotos: ['images/ejemplo 2 1.jpeg', 'images/ejemplo 2 2.jpeg', 'images/ejemplo 2 3.jpeg', 'images/ejemplo 2 4.jpeg'] },
+      { id: 1, fecha: '20/05/2026', estado: 'Maduración', tecnico: 'David', comentario: 'Muy similar a las anteriores, tienen algo menos de piel.', fotos: ['images/ejemplo2 1.jpeg', 'images/ejemplo2 2.jpeg', 'images/ejemplo2 3.jpeg', 'images/ejemplo2 4.jpeg'] },
     ]
   },
   {
