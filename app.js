@@ -87,6 +87,52 @@ let isViewMode = false;
 let viewMarker = null;
 let currentTab = 'parcelas';
 
+// ─── FIREBASE ─────────────────────────────────────────────────────────────────
+firebase.initializeApp({
+  apiKey: "AIzaSyC6MkchiUOfO0c48y9nRP7qwFyN-I4ELNI",
+  authDomain: "patatrack-82c68.firebaseapp.com",
+  projectId: "patatrack-82c68",
+  storageBucket: "patatrack-82c68.firebasestorage.app",
+  messagingSenderId: "176065686416",
+  appId: "1:176065686416:web:8865e6f18267bae7c9e115"
+});
+const db = firebase.firestore();
+const storage = firebase.storage();
+
+async function loadFromFirestore() {
+  try {
+    const snap = await db.collection('parcelas').get();
+    if (!snap.empty) {
+      parcelas = snap.docs.map(d => d.data());
+      const allIds = parcelas.map(p => p.id);
+      const allSegIds = parcelas.flatMap(p => p.seguimientos.map(s => s.id));
+      nextId = Math.max(...allIds) + 1;
+      nextSegId = allSegIds.length ? Math.max(...allSegIds) + 1 : 1;
+    } else {
+      await Promise.all(
+        parcelas.map(p => db.collection('parcelas').doc(String(p.id)).set(JSON.parse(JSON.stringify(p))))
+      );
+    }
+  } catch(e) { console.error('Firestore error:', e); }
+  renderList(parcelas.filter(p => !p.finalizada));
+  if (isDesktop()) {
+    document.getElementById('screen-detail').classList.add('active');
+    showEmptyDetail();
+  }
+}
+
+async function syncParcela(p) {
+  try {
+    await db.collection('parcelas').doc(String(p.id)).set(JSON.parse(JSON.stringify(p)));
+  } catch(e) { console.error('Firestore sync error:', e); }
+}
+
+async function uploadFoto(file) {
+  const ref = storage.ref(`fotos/${Date.now()}_${file.name}`);
+  await ref.put(file);
+  return ref.getDownloadURL();
+}
+
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
 function isDesktop() { return window.innerWidth >= 960; }
 
@@ -545,6 +591,7 @@ function saveParcela(e) {
     seguimientos: []
   };
   parcelas.unshift(p);
+  syncParcela(p);
   renderList(parcelas.filter(x => !x.finalizada));
   closeSheet('overlay-parcela');
   e.target.reset();
@@ -567,19 +614,20 @@ function removeFoto(idx) {
   renderFotosGrid();
 }
 
-function addPhoto(input) {
+async function addPhoto(input) {
   const files = Array.from(input.files);
-  let loaded = 0;
-  files.forEach(file => {
-    const reader = new FileReader();
-    reader.onload = e => {
-      currentFotos.push(e.target.result);
-      loaded++;
-      if (loaded === files.length) renderFotosGrid();
-    };
-    reader.readAsDataURL(file);
-  });
   input.value = '';
+  const btn = document.querySelector('.btn-add-foto');
+  if (btn) btn.textContent = '⏳';
+  try {
+    const urls = await Promise.all(files.map(f => uploadFoto(f)));
+    currentFotos.push(...urls);
+  } catch(e) {
+    alert('Error al subir la foto. Comprueba la conexión e inténtalo de nuevo.');
+  } finally {
+    if (btn) btn.textContent = '＋';
+    renderFotosGrid();
+  }
 }
 
 function openSeguimiento() {
@@ -617,6 +665,7 @@ function deleteSeguimiento(parcelaId, segId) {
     onOk: () => {
       const p = parcelas.find(x => x.id === parcelaId);
       p.seguimientos = p.seguimientos.filter(s => s.id !== segId);
+      syncParcela(p);
       openDetail(parcelaId);
     }
   });
@@ -641,6 +690,7 @@ function saveSeguimiento(e) {
     p.seguimientos.push({ id: nextSegId++, fecha, estado, tecnico, comentario, fotos: [...currentFotos] });
   }
 
+  syncParcela(p);
   closeSheet('overlay-seguimiento');
   openDetail(currentParcelaId);
 }
@@ -692,7 +742,9 @@ function finalizarParcela(id) {
     btnLabel: '📦 Confirmar finalización',
     btnClass: 'btn-finalizar',
     onOk: () => {
-      parcelas.find(x => x.id === id).finalizada = true;
+      const p = parcelas.find(x => x.id === id);
+      p.finalizada = true;
+      syncParcela(p);
       renderList(parcelas.filter(x => !x.finalizada));
       goBack();
     }
@@ -700,7 +752,9 @@ function finalizarParcela(id) {
 }
 
 function reactivarParcela(id) {
-  parcelas.find(x => x.id === id).finalizada = false;
+  const p = parcelas.find(x => x.id === id);
+  p.finalizada = false;
+  syncParcela(p);
   renderHistorico();
   renderList(parcelas.filter(x => !x.finalizada));
   goBack();
@@ -768,8 +822,4 @@ document.addEventListener('keydown', e => {
   }, { passive: true });
 })();
 
-renderList(parcelas.filter(p => !p.finalizada));
-if (isDesktop()) {
-  document.getElementById('screen-detail').classList.add('active');
-  showEmptyDetail();
-}
+loadFromFirestore();
