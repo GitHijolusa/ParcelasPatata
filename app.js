@@ -381,7 +381,10 @@ function openDetail(id) {
       <div class="detail-hero-info">
         <div class="detail-hero-name">
           <h2>${p.nombre}</h2>
-          ${p.lat ? `<button class="btn-ver-mapa" onclick="openViewMap(${p.lat},${p.lng},'${p.nombre.replace(/'/g,"\\'")}')">🗺️ Mapa</button>` : ''}
+          <div style="display:flex;gap:6px;align-items:center;">
+            ${p.lat ? `<button class="btn-ver-mapa" onclick="openViewMap(${p.lat},${p.lng},'${p.nombre.replace(/'/g,"\\'")}')">🗺️ Mapa</button>` : ''}
+            ${!p.finalizada ? `<button class="btn-ver-mapa" onclick="openEditParcela(${p.id})">✏️ Editar</button>` : ''}
+          </div>
         </div>
         <p>📍 ${p.ubicacion}</p>
       </div>
@@ -395,10 +398,7 @@ function openDetail(id) {
       <div class="info-item"><div class="info-label">Seguimientos</div><div class="info-val">📊 ${p.seguimientos.length}</div></div>
     </div>
     ${!p.finalizada
-      ? `<div style="display:flex;gap:8px;margin-bottom:8px;">
-           <button class="btn btn-primary" onclick="openSeguimiento()" style="flex:1">📷 Añadir seguimiento</button>
-           <button class="btn btn-secondary" onclick="openEditParcela(${p.id})" style="flex:none;padding:0 16px">✏️ Editar</button>
-         </div>`
+      ? `<button class="btn btn-primary" onclick="openSeguimiento()" style="margin-bottom:8px;">📷 Añadir seguimiento</button>`
       : `<button class="btn-reactivar" onclick="reactivarParcela(${p.id})">↩ Reactivar parcela</button>`
     }
     <div class="section-title">Historial de seguimiento</div>
