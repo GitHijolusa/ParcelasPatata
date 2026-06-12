@@ -80,6 +80,7 @@ let parcelas = [
 let nextId = 8;
 let nextSegId = 22;
 let currentParcelaId = null;
+let editingParcelaId = null;
 let editingSegId = null;
 let currentFotos = [];
 let pickedLat = null, pickedLng = null;
@@ -394,7 +395,10 @@ function openDetail(id) {
       <div class="info-item"><div class="info-label">Seguimientos</div><div class="info-val">📊 ${p.seguimientos.length}</div></div>
     </div>
     ${!p.finalizada
-      ? `<button class="btn btn-primary" onclick="openSeguimiento()" style="margin-bottom:8px;">📷 Añadir seguimiento</button>`
+      ? `<div style="display:flex;gap:8px;margin-bottom:8px;">
+           <button class="btn btn-primary" onclick="openSeguimiento()" style="flex:1">📷 Añadir seguimiento</button>
+           <button class="btn btn-secondary" onclick="openEditParcela(${p.id})" style="flex:none;padding:0 16px">✏️ Editar</button>
+         </div>`
       : `<button class="btn-reactivar" onclick="reactivarParcela(${p.id})">↩ Reactivar parcela</button>`
     }
     <div class="section-title">Historial de seguimiento</div>
@@ -570,31 +574,65 @@ function renderStats() {
 
 // ─── NUEVA PARCELA ────────────────────────────────────────────────────────────
 function openNewParcela() {
+  editingParcelaId = null;
+  document.querySelector('#overlay-parcela h2').textContent = '📍 Nueva parcela';
+  document.getElementById('overlay-parcela').querySelector('form').reset();
   pickedLat = null; pickedLng = null;
   document.getElementById('coords-badge').classList.remove('visible');
   document.getElementById('overlay-parcela').classList.add('open');
 }
 
+function openEditParcela(id) {
+  const p = parcelas.find(x => x.id === id);
+  editingParcelaId = id;
+  document.querySelector('#overlay-parcela h2').textContent = '✏️ Editar parcela';
+  document.getElementById('f-nombre').value = p.nombre;
+  document.getElementById('f-ubicacion').value = p.ubicacion;
+  document.getElementById('f-superficie').value = p.superficie;
+  document.getElementById('f-variedad').value = p.variedad;
+  document.getElementById('f-agricultor').value = p.agricultor;
+  document.getElementById('f-proveedor').value = p.proveedor;
+  if (p.siembra && p.siembra !== '—') {
+    const [d, m, y] = p.siembra.split('/');
+    document.getElementById('f-siembra').value = `${y}-${m}-${d}`;
+  }
+  if (p.lat) {
+    pickedLat = p.lat; pickedLng = p.lng;
+    const badge = document.getElementById('coords-badge');
+    badge.textContent = `📍 ${p.lat.toFixed(5)}, ${p.lng.toFixed(5)}`;
+    badge.classList.add('visible');
+  }
+  document.getElementById('overlay-parcela').classList.add('open');
+}
+
 function saveParcela(e) {
   e.preventDefault();
-  const p = {
-    id: nextId++,
-    nombre: document.getElementById('f-nombre').value,
-    ubicacion: document.getElementById('f-ubicacion').value,
-    lat: pickedLat, lng: pickedLng,
-    superficie: parseFloat(document.getElementById('f-superficie').value),
-    variedad: document.getElementById('f-variedad').value,
-    agricultor: document.getElementById('f-agricultor').value,
-    proveedor: document.getElementById('f-proveedor').value,
-    siembra: (() => { const v = document.getElementById('f-siembra').value; return v ? v.split('-').reverse().join('/') : '—'; })(),
-    finalizada: false,
-    seguimientos: []
-  };
-  parcelas.unshift(p);
-  syncParcela(p);
-  renderList(parcelas.filter(x => !x.finalizada));
-  closeSheet('overlay-parcela');
-  e.target.reset();
+  const nombre     = document.getElementById('f-nombre').value;
+  const ubicacion  = document.getElementById('f-ubicacion').value;
+  const superficie = parseFloat(document.getElementById('f-superficie').value);
+  const variedad   = document.getElementById('f-variedad').value;
+  const agricultor = document.getElementById('f-agricultor').value;
+  const proveedor  = document.getElementById('f-proveedor').value;
+  const siembra    = (() => { const v = document.getElementById('f-siembra').value; return v ? v.split('-').reverse().join('/') : '—'; })();
+
+  if (editingParcelaId !== null) {
+    const p = parcelas.find(x => x.id === editingParcelaId);
+    Object.assign(p, { nombre, ubicacion, superficie, variedad, agricultor, proveedor, siembra,
+      lat: pickedLat ?? p.lat, lng: pickedLng ?? p.lng });
+    syncParcela(p);
+    renderList(parcelas.filter(x => !x.finalizada));
+    closeSheet('overlay-parcela');
+    openDetail(p.id);
+  } else {
+    const p = { id: nextId++, nombre, ubicacion, lat: pickedLat, lng: pickedLng,
+      superficie, variedad, agricultor, proveedor, siembra, finalizada: false, seguimientos: [] };
+    parcelas.unshift(p);
+    syncParcela(p);
+    renderList(parcelas.filter(x => !x.finalizada));
+    closeSheet('overlay-parcela');
+    e.target.reset();
+  }
+  editingParcelaId = null;
   document.getElementById('coords-badge').classList.remove('visible');
   pickedLat = null; pickedLng = null;
 }
